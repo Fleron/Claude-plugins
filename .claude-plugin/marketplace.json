@@ -11,6 +11,11 @@
       "name": "commit-commands",
       "source": "./commit-commands",
       "description": "Adds a /commit and /commit-push-pr skill for quick code commits with conventional commit messages."
+    },
+    {
+      "name": "interview",
+      "source": "./interview",
+      "description": "Adds a /feature-interview skill for extensive interview questionare for feature development."
     }
   ]
 }
