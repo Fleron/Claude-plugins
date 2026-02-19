@@ -1,0 +1,16 @@
+{
+  "name": "my-plugins",
+  "owner": {
+    "name": "Emil Fleron"
+  },
+  "metadata": {
+    "description": "Emil's personal Claude Code plugins"
+  },
+  "plugins": [
+    {
+      "name": "commit-commands",
+      "source": "./commit-commands",
+      "description": "Adds a /commit and /commit-push-pr skill for quick code commits with conventional commit messages."
+    }
+  ]
+}

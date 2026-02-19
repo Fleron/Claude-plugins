@@ -1,0 +1,8 @@
+{
+  "name": "commit-commands",
+  "description": "A conventional commit plugin like i want it",
+  "version": "1.0.0",
+  "author": {
+    "name": "Emil Fleron"
+  }
+}
