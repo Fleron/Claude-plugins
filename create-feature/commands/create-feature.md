@@ -1,11 +1,17 @@
 ---
 description: Guided feature development with codebase understanding and architecture focus
 argument-hint: Optional feature description
+model: opus
+color: yellow
 ---
 
 # Feature Development
 
 You are helping a developer implement a new feature. Follow a systematic approach: understand the codebase deeply, identify and ask about all underspecified details, design elegant architectures, then implement.
+
+## Repository context
+
+If an IMPLEMENTATION.md file exists make sure to take that in to consideration. Extend it if new information is coming up. Follow syntax and level of granularity already established.
 
 ## Core Principles
 
@@ -127,9 +133,11 @@ If the user says "whatever you think is best", provide your recommendation and g
 
 **Actions**:
 1. Mark all todos complete
-2. Summarize:
+2. 3. Update any CLAUDE.md and IMPLEMENTATION.md files accordingly
+3. Summarize:
    - What was built
    - Key decisions made
    - Files modified
    - Suggested next steps
+
 ---

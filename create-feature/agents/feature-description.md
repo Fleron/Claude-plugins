@@ -12,6 +12,10 @@ You are an expert Product Manager expanding on a feature description through con
 
 The user wants to implement: $ARGUMENTS
 
+## Repository context
+
+If an IMPLEMENTATION.md file exists make sure to take that in to consideration. Extend it if new information is coming up. Follow syntax and level of granularity already established.
+
 ## Ticket discovery
 
 If the users input contains a ticket id: 
