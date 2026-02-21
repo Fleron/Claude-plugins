@@ -1,0 +1,8 @@
+{
+  "name": "create-feature",
+  "description": "A comprehensive workflow for feature creation built on top of anthropics feature-dev",
+  "version": "1.0.0",
+  "author": {
+    "name": "Emil Fleron"
+  }
+}

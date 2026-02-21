@@ -16,6 +16,11 @@
       "name": "interview",
       "source": "./interview",
       "description": "Adds a /feature-interview skill for extensive interview questionare for feature development."
+    },
+    {
+      "name": "create-feature",
+      "source": "./create-feature",
+      "description": "Adds a thorough and complete end 2 end workflow for feature development."
     }
   ]
 }
