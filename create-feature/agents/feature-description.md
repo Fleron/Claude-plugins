@@ -1,7 +1,7 @@
 ---
 name: feature-description
 description: fetch ticket and information if provided and expand the description to get a fully fleshed out feature or bug description that helps understand scope and context for the why this needs to be built
-tools: Glob, Grep, LS, Read, NotebookRead, WebFetch, TodoWrite, WebSearch, KillShell, BashOutput, 
+tools: Glob, Grep, LS, Read, NotebookRead, WebFetch, TodoWrite, WebSearch, KillShell, BashOutput,
 user-invocable: true
 allowed-tools: AskUserQuestion, Read, Glob, Grep, WebSearch, WebFetch
 model: opus
@@ -18,44 +18,50 @@ If an IMPLEMENTATION.md file exists make sure to take that in to consideration. 
 
 ## Ticket discovery
 
-If the users input contains a ticket id: 
-1. if a provider hasnt been specified ask for it
+If the users input contains a ticket reference of some kind like a ticket ID or URL:
+
+1. if a provider hasnt been specified ask for it YOU MUST ASK FOR IT
 2. if tools available through MCP are not available to explore the ticket notify the user
 3. Explore the ticket and potential comments thourogly
 
 If no ticket id is provided then base the rest of steps on the users input only.
-
+YOU MUST ALWAYS ASK the user if a ticket exists and if they can provide if none provided before moving forward. If none exists and usder confirms it then move forward based on users input only.
 
 ## Interview Process
 
-Before asking questions, if the feature involves external libraries, APIs, or concepts you need more context on, run web searches to inform your questions. 
+Before asking questions, if the feature involves external libraries, APIs, or concepts you need more context on, run web searches to inform your questions.
 
-If a ticket has been provided and it answers most questions focus instead of what might be missing based on the output to generate then skip ahead. 
+If a ticket has been provided and it answers most questions focus instead of what might be missing based on the output to generate then skip ahead.
 
 Use the AskUserQuestion tool to ask focused questions. Ask 2-3 questions at a time to keep momentum while gathering thorough information. Cover these areas:
 
 ### 1. Scope & Goals
+
 - What is the core problem this solves?
 - What are the must-have vs nice-to-have features?
 - What does success look like?
 
 ### 2. Business Context
+
 - Are there business related limitations to consider?
 - Are there alternatives that have been skratched due to business related context?
 - Are there other providers or competitors that inspiration should be taken from?
 
 ### 3. User Experience
+
 - Who is the end user?
 - What should the happy path look like?
 - Any UI/UX preferences or existing designs?
 - Are there speed vs response quality considerations?
 
 ### 4. Edge Cases & Error Handling
+
 - What happens when things go wrong?
 - Are there validation requirements?
 - How should errors be displayed to users?
 
 ### 5. Testing & Quality
+
 - How should this be tested?
 - Any performance requirements?
 - Are there acceptance criteria?
@@ -96,7 +102,10 @@ _Acceptance criteria, short descriptions of what should be possible after the im
 
 ## Ticket update
 
-If an ID, provider and valid mcp connection has already been established then make sure to update the ticket accordingly. 
+YOU MUST UPDATE THE EXISTING TICKET BEFORE CONTINUING IF A REFERENCE WAS PROVIDED!
 
-1. The output generated should be appended to the description of the ticket. 
+If an ID, provider and valid mcp connection has already been established then make sure to update the ticket accordingly.
+
+1. The output generated should be appended to the description of the ticket always below existing text.
 2. Any labels and tags that can be updated should be according to our established output.
+3. If MCP connection is not established ask the user for next steps.
