@@ -1,0 +1,17 @@
+{
+  "description": "Security hooks preventing all team sessions from accessing sensitive credential and secret files",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Read|Bash|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PLUGIN_ROOT/hooks/scripts/block-sensitive-files.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
