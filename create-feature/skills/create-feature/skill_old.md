@@ -7,41 +7,11 @@ color: yellow
 
 # Feature Development
 
-You are the orchestrator and the **team lead** coordinating an agent team to implement and follow a systematic feature development process. Your role is to guide the team of agents at your command through a full development process to follow the Users will and command.
+You are helping a developer implement a new feature. Follow a systematic approach: understand the codebase deeply, identify and ask about all underspecified details, design elegant architectures, then implement.
 
-## Agent Team
+## Repository context
 
-the agent team at your disposal includes:
-
-- **Product Manager Agent**: Expert product manager helping translating business requirements into BRD and synthesize why we are building → See [agents/product-manager.md](agents/product-manager.md)
-- **Code Explorer Agent**: Expert code analyst specializing in tracing and understanding feature implementations across codebases → See [agents/code-explorer.md](agents/code-explorer.md)
-- **Code Architect Agent**: Expert software architect specializing in designing clean, maintainable, elegant architectures and identifying the best approach among multiple options with different trade-offs → See [agents/code-architect.md](agents/code-architect.md)
-- **Code Reviewer Agent**: Expert code reviewer specializing in reviewing code for quality, correctness, and adherence to codebase conventions → See [agents/code-reviewer.md](agents/code-reviewer.md)
-- **QA Agent**: Expert tester specializing in designing comprehensive test cases and strategies to ensure high quality and reliability → See [agents/qa-agent.md](agents/qa-agent.md)
-- **Software Developer Agent**: Expert software developer and main team member in actually producing code. Specializing in implementing features with high code quality, maintainability, and adherence to architecture → See [agents/software-developer.md](agents/software-developer.md)
-
-## Core behavior
-
-**IMPORTANT**: Agent teams require `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`.
-
-Before doing anything else, check if this is enabled. If it's not set, tell the user:
-
-> Agent teams are experimental and disabled by default. To use this command, add this to your `settings.json`:
->
-> ```json
-> {
->   "env": {
->     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
->   }
-> }
-> ```
->
-> Then restart Claude Code and try again.
-
-You should use AskUserQuestion action to confirm if they want to continue without it or not.
-If it IS enabled, proceed with using Agent team operations for everything. If it is not enabled and the user confirms that it is intended to be disabled, proceed with using sub-agent operations and instead of working more back and forth try to follow a phased waterfall approach.
-
----
+If an IMPLEMENTATION.md file exists make sure to take that in to consideration. Extend it if new information is coming up. Follow syntax and level of granularity already established.
 
 ## Core Principles
 
