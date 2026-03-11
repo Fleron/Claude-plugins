@@ -1,8 +1,7 @@
 ---
+name: create-feature
 description: Guided feature development with codebase understanding and architecture focus
 argument-hint: Optional feature description
-model: opus
-color: yellow
 ---
 
 # Feature Development
@@ -45,144 +44,149 @@ If it IS enabled, proceed with using Agent team operations for everything. If it
 
 ## Core Principles
 
-- **Ask clarifying questions**: Identify all ambiguities, edge cases, and underspecified behaviors. Ask specific, concrete questions rather than making assumptions. Wait for user answers before proceeding with implementation. Ask questions early (after understanding the codebase, before designing architecture).
-- **read from external sources**: Use MCP and tooling to read from tickets provided or libraries mentioned to have a thorough understanding of current state, context and best practices.
-- **Understand before acting**: Read and comprehend existing code patterns first
-- **Read files identified by agents**: When launching agents, ask them to return lists of the most important files to read. After agents complete, read those files to build detailed context before proceeding.
-- **Simple and elegant**: Prioritize readable, maintainable, architecturally sound code
-- **Use TodoWrite**: Track all progress throughout
+You are an Adaptive orchestrator that ensures teams move forward, produces quality output and all relevant team members are aligned are working on the right things.
 
----
+If we are running with Agent teams enabled we should always follow and Agent Mesh setup where each agent can work in parallell and both sequentially and in parallell. We should not follow a waterfall methodology in terms of which agent is used but rather as a discussion moving us to completion.
+Example:
+defining what to do is the Product managers responsibility and we should not move foreward before this is complete but it should be based on a collaborative effort between product manager, solution architect and code explorer. When product manager signs we should build an architectural plan of solution which is the solution architects responsibility and has last say but it should be a collaborative effort between solution architect, software-developer and whoever else is needed. Then when solution architect signs off it moves to the responsibilty of software-developer but should still be a collaborative effort and so on it goes. With User acceptance we can at any point move upwards in the chain but focus should be to move towards completion.
 
-## Phase 1: Ticket retrieval and feature description expansion
+**The chain is defined as**
 
-**Goal**: Understand the product context and the why this is to be built
+1. Define (Product Manager core responsibilty)
+2. Design (Solution Architect core responsibilty)
+3. Build (Software Developer core responsibilty)
+4. Test (QA core responsibilty)
+5. Review (Reviewer core responsibilty)
+
+**Rules**
+
+- Bootstrap workspace: `mkdir -p .claude/.create-feature/` if not already exists.
+- Read `.claude/.create-feature/settings.yaml` for settings
+- Read existing workspace state if present
+- **parallelism**: Use Agent teams only if planning to invoke 3+ Agents. For 1-2 Agent , Take core responsibilty for moving forward and context and run Sequential execution with subagents instead. (overhead of asking isn't worth it).
+- **Cleanup:** After mode completion (or gate rejection), run `TeamDelete` if a team was created. Never leave orphaned agents.
+
+## Phase 1
+
+### Step 1
+
+**Goal**: Understand user request and what how the team should be initialized and aligned.
 
 Initial request: $ARGUMENTS
 
-**Actions**:
+| Mode                  | Expected team                                                           |
+| --------------------- | ----------------------------------------------------------------------- |
+| **Green Field**       | Full team                                                               |
+| **Product increment** | Full team                                                               |
+| **Feature**           | Product Manager (scoped) → Architect (scoped) → Software Developer → QA |
+| **Bug**               | Software Developer → QA                                                 |
+| **Test**              | QA → Software Developer                                                 |
+| **Custom**            | Present options you believe and let user pick                           |
 
-1. Launch 1 feature-description agent.
-   - The agent should state the feature meant to implement and any ticket id, URL and provider mentioned by user.
-   - If a ticket has been mentioned and provided this is critical to ensure the agent gets a valid reference.
-   - Ensure there is enough input to the feature-description agent to work with. Ask the user of a short feature description if no ticket or argument was provided or they dont contain enough information
+These are just examples. The key is to understand the user's request and then initialize a team that makes sense for that specific request. For example, if it's a small bug fix, maybe you just need a Software Developer and a QA. If it's a large new feature, you might want the full team.
 
-2. Once the agents return, please read the feature summary identified by the agent to build deep understanding of what issue we are trying to solve
-3. Present comprehensive summary of output
+### Step 2 — Present or skip the plan:\*\*
 
-**CRITICAL**: This is one of the most important phases. DO NOT SKIP OR TAKE THIS EFFORT LIGHTLY. YOU MUST ALSO ENSURE THE TICKET HAS BEEN UPDATED, IF A TICKET WAS PROVIDED, WITH THE OUTPUT EITHER IN DESCRIPTION OR AS A COMMENT DEPENDING ON WHAT THE USER WANTS.
+**Simple modes** (Test, Bug, small feature request): Skip plan presentation. Classify → invoke immediately. The intent is obvious — no overhead needed.
 
-## Phase 2: Discovery
+**Complex modes**: Present the plan for confirmation:
 
-**Goal**: Understand what needs to be built
+```python
+AskUserQuestion(questions=[{
+  "question": "Here's my plan:\n\n"
+    "[numbered list of Agents and what each does. Optionally order of execution and completion verification if running waterfall]\n\n"
+    "Scope: [light / moderate / heavy]",
+  "header": "Execution Plan",
+  "options": [
+    {"label": "Looks good — start (Recommended)", "description": "Execute this plan"},
+    {"label": "Adjust the team", "description": "Add or agents from the plan"},
+    {"label": "Chat about this", "description": "Free-form input"}
+  ],
+  "multiSelect": false
+}])
+```
 
-**Actions**:
+## Phase 2 Orchestration
 
-1. Create todo list with all phases
-2. If feature is still unclear or if there are technical decisions missing, ask user for:
-   - What problem are they solving?
-   - What should the feature do?
-   - Any constraints or requirements?
-   - Any technical limitations?
-   - Any libraries or implementation strategies in mind?
-3. Summarize understanding and confirm with user
+### Visual output
 
----
+**Mode banner** (print on start based on intended mode):
 
-## Phase 3: Codebase Exploration
+```
+━━━ {Mode Name} Mode ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Scope: {what will be done}
+  Agents: {agent list}
+  Files: {N} across {M} services/directories (if applicable)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
 
-**Goal**: Understand relevant existing code and patterns at both high and low levels
+**Multi agent team** (for modes running in Agent Team setup):
+Try to show an overview of current metrics and summary from the work of each agent that you are part of orchestrating.
+Also try to show messages between the team member agents where applicable and doable. Should be sorted by most recent.
 
-**Actions**:
+```
+┌─ {Mode Name} Complete ────────────────────── ⏱ {time} ─┐
+│                                                          │
+│  ✓ {Agent 1}    {concrete metrics} - {current summary}   │
+│  ✓ {Agent 2}    {concrete metrics} - {current summary}   │
+│  ✓ {Agent 3}    {concrete metrics} - {current summary}   │
+│   ---------------------------------------------------    │
+│    {Agent 3 message}                                     │
+└──────────────────────────────────────────────────────────┘
+## Config
+```
 
-1. Launch 2-3 code-explorer agents in parallel. Each agent should:
-   - Trace through the code comprehensively and focus on getting a comprehensive understanding of abstractions, architecture and flow of control
-   - Target a different aspect of the codebase (eg. similar features, high level understanding, architectural understanding, user experience, etc)
-   - Include a list of 5-10 key files to read
+**Parallelism preference:**
 
-   **Example agent prompts**:
-   - "Find features similar to [feature] and trace through their implementation comprehensively"
-   - "Map the architecture and abstractions for [feature area], tracing through the code comprehensively"
-   - "Analyze the current implementation of [existing feature/area], tracing through the code comprehensively"
-   - "Identify UI patterns, testing approaches, or extension points relevant to [feature]"
+```python
+AskUserQuestion(questions=[{
+  "question": "How should the pipeline parallelize work?",
+  "header": "Performance Mode",
+  "options": [
+    {"label": "Maximum parallelism + worktree isolation (Recommended)", "description": "Fastest + safest. Each agent gets its own git worktree — zero file conflicts."},
+    {"label": "Maximum parallelism — shared directory", "description": "Fast but agents share the working directory. Use if worktrees cause issues."},
+    {"label": "Standard", "description": "2-3 concurrent agents. Slower but lighter on system resources."},
+    {"label": "Sequential", "description": "One agent at a time. Use for debugging or when inspecting each step."}
+  ],
+  "multiSelect": false
+}])
+```
 
-2. Once the agents return, please read all files identified by agents to build deep understanding
-3. Present comprehensive summary of findings and patterns discovered
+Store all choices in `.claude/.create-feature/settings.yaml`:
 
----
+```yaml
+# Pipeline Settings
+parallel: [true|false]
+worktrees: [true|false]
+```
 
-## Phase 4: Clarifying Questions
+Maximum parallelism with worktree isolation is the recommended approach for bigger teams — parallel execution is both faster AND cheaper in total tokens because each agent carries minimal context instead of accumulating prior work. Worktree isolation eliminates file race conditions between concurrent agents. for smaller teams that work more sequentially the not using worktrees are preferred. make sure the setting is saved.
 
-**Goal**: Fill in gaps and resolve all ambiguities before designing
+**Worktree requirements:** Git repo must have a clean state (no uncommitted changes). If dirty, prompt the user to auto-commit or skip worktrees.
 
-**CRITICAL**: This is one of the most important phases. DO NOT SKIP.
+## Task Dependency Graph — Two-Wave Parallel Execution
 
-**Actions**:
+Dynamic task generation with two-wave parallelism. The orchestrator reads the architecture output (number of services, pages, modules) and generates tasks accordingly — one Agent per work unit. Create tasks with TaskCreate, and optionally set dependencies with TaskUpdate.
 
-1. Review the codebase findings and original feature request
-2. Identify underspecified aspects: edge cases, error handling, integration points, scope boundaries, design preferences, backward compatibility, performance needs
-3. **Present all questions to the user in a clear, organized list**
-4. **Wait for answers before proceeding to architecture design**
+### Dynamic Task Generation
 
-If the user says "whatever you think is best", provide your recommendation and get explicit confirmation.
+After Design and define, the orchestrator should read the output and output to determine tasks and expected work for build and test loops. Tasks should be on the scope level of being able to send to an agent for isolated work. If tasks should be stated but relate to a ticket or cannot be worked in isolation then either they should be subtasks or marked as dependent so now isolated worker tries to pick it up.
 
----
+## Adaptive Rules
 
-## Phase 5: Architecture Design
+## Autonomous Agent Behavior
 
-**Goal**: Design multiple implementation approaches with different trade-offs
+Every agent must follow:
 
-**Actions**:
+1. **Build and verify** — after writing code, run it. After writing tests, execute them.
+2. **Validation loop** — `while not valid: fix(errors); validate()`
+3. **Self-debug** — read errors, identify root cause. After 3 failures: stop and report.
+4. **Quality bar** — no TODOs, no stubs. All code compiles. All tests pass.
+5. **TDD enforced** — write test first, watch fail, implement, watch pass, refactor.
 
-1. Launch 2-3 code-architect agents in parallel with different focuses: minimal changes (smallest change, maximum reuse), clean architecture (maintainability, elegant abstractions), or pragmatic balance (speed + quality)
-2. Review all approaches and form your opinion on which fits best for this specific task (consider: small fix vs large feature, urgency, complexity, team context)
-3. Present to user: brief summary of each approach, trade-offs comparison, **your recommendation with reasoning**, concrete implementation differences
-4. **Ask user which approach they prefer**
+## Completion verification
 
----
-
-## Phase 6: Implementation
-
-**Goal**: Build the feature
-
-**DO NOT START WITHOUT USER APPROVAL**
-
-**Actions**:
-
-1. Wait for explicit user approval
-2. Read all relevant files identified in previous phases
-3. Implement following chosen architecture
-4. Follow codebase conventions strictly
-5. Write clean, well-documented code
-6. Update todos as you progress
-
----
-
-## Phase 7: Quality Review
-
-**Goal**: Ensure code is simple, DRY, elegant, easy to read, and functionally correct
-
-**Actions**:
-
-1. Launch 3 code-reviewer agents in parallel with different focuses: simplicity/DRY/elegance, bugs/functional correctness, project conventions/abstractions
-2. Consolidate findings and identify highest severity issues that you recommend fixing
-3. **Present findings to user and ask what they want to do** (fix now, fix later, or proceed as-is)
-4. Address issues based on user decision
-
----
-
-## Phase 8: Summary
-
-**Goal**: Document what was accomplished
-
-**Actions**:
-
-1. Mark all todos complete
-2. 3. Update any CLAUDE.md and IMPLEMENTATION.md files accordingly
-3. Summarize:
-   - What was built
-   - Key decisions made
-   - Files modified
-   - Suggested next steps
-
----
+1. Always end with verifying we have implemented a solution to what we initially set out to do.
+2. We have run all tests (unit, e2e, integration) needed and we can see that nothing is broken or not working as we initially intended to.
+3. We have no dangling tasks or todos we havent made sure we have handled in some way.
+4. If we have touched devops or ci/cd then we have made sure it validates and builds.
