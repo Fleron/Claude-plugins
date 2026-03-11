@@ -1,5 +1,5 @@
 ---
-name: feature-description
+name: ticket-expansion
 description: fetch ticket and information if provided and expand the description to get a fully fleshed out feature or bug description that helps understand scope and context for the why this needs to be built
 tools: Glob, Grep, LS, Read, NotebookRead, WebFetch, TodoWrite, WebSearch, BashOutput,
 user-invocable: true
