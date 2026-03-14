@@ -1,0 +1,8 @@
+{
+  "name": "handoff",
+  "description": "an alternative to compact that writes a handoff for a new session",
+  "version": "1.0.0",
+  "author": {
+    "name": "Emil Fleron"
+  }
+}

@@ -21,6 +21,16 @@
       "name": "create-feature",
       "source": "./create-feature",
       "description": "Adds a thorough and complete end 2 end workflow for feature development."
+    },
+    {
+      "name": "handoff",
+      "source": "./handoff",
+      "description": "Adds an alternative to /compact through /handoff."
+    },
+    {
+      "name": "claudemd-improve",
+      "source": "./claudemd-improve",
+      "description": "adds an automatic review and improve of global and local CLAUDE.md"
     }
   ]
 }
