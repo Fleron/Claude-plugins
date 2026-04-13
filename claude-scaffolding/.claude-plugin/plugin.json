@@ -1,0 +1,8 @@
+{
+  "name": "claude-scaffolding",
+  "description": "An agent scaffolding for development the way i want it",
+  "version": "1.0.0",
+  "author": {
+    "name": "Emil Fleron"
+  }
+}

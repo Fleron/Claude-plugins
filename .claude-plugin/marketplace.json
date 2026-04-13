@@ -31,6 +31,12 @@
       "name": "claudemd-improve",
       "source": "./claudemd-improve",
       "description": "adds an automatic review and improve of global and local CLAUDE.md"
+    },
+    {
+      "name": "claude-scaffolding",
+      "source": "./claude-scaffolding",
+      "description": "A full scaffolding and claude harness for e2e development"
     }
+
   ]
 }
