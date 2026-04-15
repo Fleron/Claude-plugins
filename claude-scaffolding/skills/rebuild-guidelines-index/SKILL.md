@@ -12,6 +12,7 @@ Generate navigational index files for `reference/coding-guidelines/` so explorer
 ### Step 1: Discover Structure
 
 Traverse `reference/coding-guidelines/` using Glob or ls. Map:
+
 - All language directories (e.g., `rust/`, `python/`)
 - All topic directories within each language (e.g., `rust/general/`, `rust/errors/`)
 - All `.md` files in each topic directory, **excluding** any existing `index.md`
@@ -80,6 +81,7 @@ per-folder index.}
 ```
 
 If a topic folder is empty (no `.md` files other than `index.md`), note it:
+
 ```
 ### {topic}/ (empty)
 No guideline files yet.
@@ -109,6 +111,7 @@ Topics: {topic1} ({N} files), {topic2} ({N} files), ...
 ### Step 5: Report
 
 List all index files created or updated:
+
 ```
 Index files updated:
 - reference/coding-guidelines/index.md
