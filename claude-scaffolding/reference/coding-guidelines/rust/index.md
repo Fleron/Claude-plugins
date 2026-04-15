@@ -6,9 +6,11 @@
 ## Topic Folders
 
 ### general/ (6 files)
+
 Core Rust principles, project/file/function structure, memory management, Option/Result handling, iterators, comments/documentation, imports. Also covers simplicity principles, AI-oriented API design, elements of idiomatic Rust, functional vs OOP paradigms, and type-state pattern for compile-time state enforcement.
 
 **Key topics by file:**
+
 | File | Covers |
 |------|--------|
 | guidelines.md | Core principles, project structure (P-MOD, P-DIR-MOD, P-PRELUDE-MOD, P-PATH-MOD, P-API, P-VISIBILITY), file structure (M-PRIV-PUB-USE, M-SINGLE-USE, M-ITEM-TOC, M-TYPE-ASSOC, M-ASSOC-TRAIT, M-CALLER-CALLEE, M-PUB-PRIV), function structure (F-GROUP, F-OUT, F-VISUAL, F-PURE-MUT, F-COMBINATOR), borrowing, Option/Result, iterators, imports |
@@ -19,6 +21,7 @@ Core Rust principles, project/file/function structure, memory management, Option
 | type-states.md | Type-state pattern, compile-time state enforcement, builder pattern with marker types, protocol state machines, PhantomData |
 
 ### errors/ (1 file)
+
 Error handling best practices covering Result over panic, thiserror for libraries, anyhow for binaries, unwrap alternatives, ? propagation, error hierarchies, async errors.
 
 | File | Covers |
@@ -26,6 +29,7 @@ Error handling best practices covering Result over panic, thiserror for librarie
 | error-handling.md | Result vs panic, unwrap/expect alternatives (let-Ok, unwrap_or), thiserror (Display, From, Error Hierarchies), anyhow for binaries, ? propagation, testing errors, Custom Error Structs, Async Errors (Send+Sync+'static) |
 
 ### testing/ (1 file)
+
 Automated testing philosophy, test organization, doc testing, assertions, snapshot testing with cargo insta.
 
 | File | Covers |
@@ -33,6 +37,7 @@ Automated testing philosophy, test organization, doc testing, assertions, snapsh
 | automated-testing.md | Tests as documentation, one behavior per test, doc tests (rustdoc), unit/integration/doc test types, assert!/assert_eq!/matches!, snapshot testing (cargo insta, named snapshots, redactions), rstest parameterized tests |
 
 ### linting/ (1 file)
+
 Clippy and linting discipline: standard commands, critical lints, fix-don't-silence policy, workspace configuration.
 
 | File | Covers |
@@ -40,6 +45,7 @@ Clippy and linting discipline: standard commands, critical lints, fix-don't-sile
 | clippy-and-linting.md | cargo clippy command (all-targets, -D warnings), critical lints (redundant_clone, needless_borrow, large_enum_variant, etc.), #[expect()] over #[allow()], Cargo.toml lint configuration |
 
 ### performance/ (2 files)
+
 Performance optimization (profiling, cloning, stack vs heap, iterators) and polymorphism trade-offs (generics vs trait objects vs concrete types).
 
 | File | Covers |
@@ -48,6 +54,7 @@ Performance optimization (profiling, cloning, stack vs heap, iterators) and poly
 | generics-dynamics-statics.md | Monomorphization, static dispatch (impl Trait, <T: Trait>), dynamic dispatch (dyn Trait, vtable), trade-off table, &dyn Trait vs Box<dyn Trait>, Arc<dyn Trait + Send + Sync>, object safety rules |
 
 ### tooling/ (1 file)
+
 Recommended crates directory organized by category.
 
 | File | Covers |

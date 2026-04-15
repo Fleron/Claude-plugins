@@ -6,8 +6,10 @@
 ## Languages
 
 ### rust/
+
 Comprehensive Rust development guidelines covering idiomatic patterns, error handling, testing practices, performance optimization, linting, and recommended crates.
 Topics: general (6 files), errors (1), testing (1), linting (1), performance (2), tooling (1)
 
 ### python/
+
 Python development guidelines. No content files yet — empty topic directories exist for errors/ and testing/.

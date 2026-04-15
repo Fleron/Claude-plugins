@@ -4,4 +4,5 @@
 > Last rebuilt: 2026-04-15 12:00
 
 ## error-handling.md (189 lines)
+
 Comprehensive Rust error handling best practices for libraries and binaries. Covers: 4.1 "Prefer Result, avoid panic" (Result types, panic!/todo!/unreachable! macros), 4.2 "Avoid unwrap/expect in Production" (let-Ok pattern, if-let-Ok, unwrap_or alternatives), 4.3 "thiserror for Crate level errors" (deriving error types with Display and From, Error Hierarchies and Wrapping), 4.4 "Reserve anyhow for Binaries" (Anyhow Gotchas), 4.5 "Use ? to Bubble Errors", 4.6 "Unit Test should exercise errors" (error message assertions), and 4.7 "Important Topics" (Custom Error Structs, Async Errors with Send+Sync+'static bounds).

@@ -4,19 +4,25 @@
 > Last rebuilt: 2026-04-15 12:00
 
 ## guidelines.md (89 lines)
+
 Core Rust coding principles emphasizing technical writing, locality, and simplicity. Covers Project Structure rules (P-MOD, P-DIR-MOD, P-PRELUDE-MOD, P-PATH-MOD, P-API, P-VISIBILITY), File Structure rules (M-PRIV-PUB-USE, M-PRIV-USE, M-SINGLE-USE, M-ITEM-TOC, M-TYPE-ASSOC, M-ASSOC-TRAIT, M-CALLER-CALLEE, M-PUB-PRIV), Function Structure rules (F-GROUP, F-OUT, F-VISUAL, F-PURE-MUT, F-COMBINATOR), and standards for borrowing vs cloning, Option/Result handling, iterators, comments, and import declarations.
 
 ## ai-coding-rust-guidelines.md (1811 lines)
+
 Comprehensive pragmatic Rust guidelines designed for AI agents and developers. Covers AI-friendly API design (M-DESIGN-FOR-AI), application error handling (M-APP-ERROR, M-MIMALLOC-APPS), documentation standards (M-CANONICAL-DOCS, M-DOC-INLINE, M-FIRST-DOC-SENTENCE, M-MODULE-DOCS), FFI safety (M-ISOLATE-DLL-STATE), performance optimization (M-HOTPATH, M-THROUGHPUT, M-YIELD-POINTS), unsafe code guidelines (M-UNSAFE-IMPLIES-UB, M-UNSAFE, M-UNSOUND), universal principles (M-CONCISE-NAMES, M-DOCUMENTED-MAGIC, M-LINT-OVERRIDE-EXPECT, M-LOG-STRUCTURED, M-PANIC-IS-STOP, M-PANIC-ON-BUG), and extensive library UX patterns (M-PUBLIC-DEBUG, M-PUBLIC-DISPLAY, M-REGULAR-FN, M-SMALLER-CRATES, M-STATIC-VERIFICATION, M-STRONG-TYPES, M-SIMPLE-ABSTRACTIONS, M-ESSENTIAL-FN-INHERENT, M-IMPL-ASREF, M-IMPL-IO, M-DI-HIERARCHY, M-ERRORS-CANONICAL-STRUCTS, M-INIT-BUILDER, M-SERVICES-CLONE, and many more).
 
 ## be-simple.md (46 lines)
+
 Philosophy guide emphasizing simplicity as prerequisite for reliability. Covers simple vs clever code, managing complexity and accidental complexity, best practices for generics, performance and efficiency, development workflow (Seinfeld Method, deferring refactoring), and API/library design principles targeting the common case.
 
 ## elements-of-rust.md (111 lines)
+
 Technical reference for refactoring and ergonomics. Covers rightward pressure and de-nesting techniques, flattening error handling with `?` operator, combating nested matches with tuple matching, iteration techniques (reverse ranges, empty/singular iterators, tuple structs as functions), blocks for precise closure capture, compiler error handling, and lockdown patterns (the "Never" type, deactivating mutability via Deref, internal mutability via Cell).
 
 ## functional-oop.md (109 lines)
+
 Guide to navigating Rust's multi-paradigm nature. Covers Functional Programming characteristics (lazy evaluation, efficiency, parallelism), Imperative Programming (granular control, mutable state), Object-Oriented Programming (encapsulation via traits, polymorphism, dynamic dispatch), architectural organization (functional core with imperative shell, OOP for large-scale), paradigm selection rules, and optimization guidance prioritizing readability.
 
 ## type-states.md (231 lines)
+
 Design pattern guide for encoding state as types to prevent illegal states at compile time. Covers the type-state pattern concept, simple file-state example with File<State>, real-world examples (builder pattern with compile-time guarantees using marker types, network protocol state machine), pros and cons, and cautions about verbosity and PhantomData complexity.

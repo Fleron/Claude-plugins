@@ -6,7 +6,9 @@
 ## Topic Folders
 
 ### errors/ (empty)
+
 No guideline files yet.
 
 ### testing/ (empty)
+
 No guideline files yet.
