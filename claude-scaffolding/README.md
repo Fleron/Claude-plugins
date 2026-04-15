@@ -39,7 +39,7 @@ Review loops repeat until both reviewers approve before moving to the next task.
 
 - `agents/implementer.md` — implements, tests, commits, self-reviews (Sonnet)
 - `agents/spec-compliance-reviewer.md` — verifies code matches spec exactly (Sonnet)
-- `agents/code-reviewer.md` — checks code quality (Sonnet)
+- `agents/code-quality-reviewer.md` — reviews code quality against project coding guidelines (caller decides model)
 
 **Dispatch templates:**
 

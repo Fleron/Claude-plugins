@@ -53,7 +53,7 @@ digraph process {
         "Dispatch spec reviewer subagent (./reference/spec-reviewer-prompt.md)" [shape=box];
         "Spec reviewer subagent confirms code matches spec?" [shape=diamond];
         "Implementer subagent fixes spec gaps" [shape=box];
-        "Dispatch code quality reviewer subagent (./code-quality-reviewer-prompt.md)" [shape=box];
+        "Dispatch code quality reviewer subagent (./reference/code-quality-reviewer-prompt.md)" [shape=box];
         "Code quality reviewer subagent approves?" [shape=diamond];
         "Implementer subagent fixes quality issues" [shape=box];
         "Mark task complete in TodoWrite" [shape=box];
@@ -73,10 +73,10 @@ digraph process {
     "Dispatch spec reviewer subagent (./reference/spec-reviewer-prompt.md)" -> "Spec reviewer subagent confirms code matches spec?";
     "Spec reviewer subagent confirms code matches spec?" -> "Implementer subagent fixes spec gaps" [label="no"];
     "Implementer subagent fixes spec gaps" -> "Dispatch spec reviewer subagent (./reference/spec-reviewer-prompt.md)" [label="re-review"];
-    "Spec reviewer subagent confirms code matches spec?" -> "Dispatch code quality reviewer subagent (./code-quality-reviewer-prompt.md)" [label="yes"];
-    "Dispatch code quality reviewer subagent (./code-quality-reviewer-prompt.md)" -> "Code quality reviewer subagent approves?";
+    "Spec reviewer subagent confirms code matches spec?" -> "Dispatch code quality reviewer subagent (./reference/code-quality-reviewer-prompt.md)" [label="yes"];
+    "Dispatch code quality reviewer subagent (./reference/code-quality-reviewer-prompt.md)" -> "Code quality reviewer subagent approves?";
     "Code quality reviewer subagent approves?" -> "Implementer subagent fixes quality issues" [label="no"];
-    "Implementer subagent fixes quality issues" -> "Dispatch code quality reviewer subagent (./code-quality-reviewer-prompt.md)" [label="re-review"];
+    "Implementer subagent fixes quality issues" -> "Dispatch code quality reviewer subagent (./reference/code-quality-reviewer-prompt.md)" [label="re-review"];
     "Code quality reviewer subagent approves?" -> "Mark task complete in TodoWrite" [label="yes"];
     "Mark task complete in TodoWrite" -> "More tasks remain?";
     "More tasks remain?" -> "Dispatch implementer subagent (./reference/implementer-prompt.md)" [label="yes"];
@@ -124,7 +124,7 @@ Implementer subagents report one of four statuses. Handle each appropriately:
 
 - `./reference/implementer-prompt.md` - Dispatch implementer subagent
 - `./reference/spec-reviewer-prompt.md` - Dispatch spec compliance reviewer subagent
-- `./code-quality-reviewer-prompt.md` - Dispatch code quality reviewer subagent
+- `./reference/code-quality-reviewer-prompt.md` - Dispatch code quality reviewer subagent
 
 ## Example Workflow
 
@@ -196,7 +196,7 @@ Code reviewer: ✅ Approved
 ...
 
 [After all tasks]
-[Dispatch final code-reviewer]
+[Dispatch final code-quality-reviewer]
 Final reviewer: All requirements met, ready to merge
 
 Done!
@@ -279,3 +279,7 @@ Done!
 **Subagents should use:**
 
 - skill **tdd** - Subagents follow TDD(test driven development) for each task
+
+**Transitive dependencies:**
+
+- The `code-quality-reviewer` agent dispatches the `code-guidelines-explorer` subagent internally to find relevant coding guidelines. You do not need to dispatch the explorer yourself — the quality reviewer handles this automatically.
