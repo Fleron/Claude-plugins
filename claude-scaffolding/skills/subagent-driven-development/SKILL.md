@@ -5,6 +5,8 @@ description: Use when executing implementation plans with independent tasks in t
 
 # Subagent-Driven Development
 
+If the Experimental claude team is available ask if we should run as a team. If yes then execute as a team with relevant team members in the loop. Always have at least one member acting as devils advocate when reviewing the implementers work separate from the code quality reviewer.
+
 Execute plan by dispatching fresh subagent per task, with two-stage review after each: spec compliance review first, then code quality review.
 
 **Why subagents:** You delegate tasks to specialized agents with isolated context. By precisely crafting their instructions and context, you ensure they stay focused and succeed at their task. They should never inherit your session's context or history — you construct exactly what they need. This also preserves your own context for coordination work.
