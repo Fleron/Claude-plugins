@@ -3,6 +3,8 @@ name: brainstorm
 description: "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation."
 ---
 
+> **Pipeline position:** stage 1 of 3 — see [`reference/pipeline-flow.md`](../../reference/pipeline-flow.md).
+
 # Brainstorming Ideas Into Designs
 
 Help turn ideas into fully formed designs and specs through natural collaborative dialogue.
@@ -10,7 +12,7 @@ Help turn ideas into fully formed designs and specs through natural collaborativ
 Start by understanding the current project context, then ask questions one at a time to refine the idea. Once you understand what you're building, present the design and get user approval.
 
 <HARD-GATE>
-Do NOT invoke any implementation skill, write any code, scaffold any project, or take any implementation action until you have presented a design and the user has approved it. This applies to EVERY project regardless of perceived simplicity.
+Do NOT invoke any other skill, write any code, scaffold any project, or take any implementation action until the spec is written, the subagent spec-quality review has passed, and the handoff doc is written. After the handoff is written, STOP and instruct the user to /clear or open a new session before running plan-writing.
 </HARD-GATE>
 
 ## Anti-Pattern: "This Is Too Simple To Need A Design"
@@ -25,18 +27,18 @@ You MUST create a task for each of these items and complete them in order:
 2. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
 3. **Propose 2-3 approaches** — with trade-offs and your recommendation
 4. **Present design** — in sections scaled to their complexity, get user approval after each section
-5. **Write design doc** — save to local .claude directory under `project-docs/specs/YYYY-MM-DD-<topic>-design.md` and commit
-6. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
-7. **User reviews written spec** — ask user to review the spec file before proceeding. Always use AskUserQuestion
-8. **Transition to implementation** — invoke plan-creation skill to create implementation plan
+5. **Write spec** to `project-docs/specs/YYYY-MM-DD-<topic>-design.md`
+6. **Inline spec self-review** — placeholder/contradiction/scope/ambiguity sweep
+7. **User reviews written spec; iterate until approved**
+8. **Subagent spec review** — dispatch `claude-scaffolding:spec-compliance-reviewer` with `skills/brainstorm/spec-quality-review-prompt.md`. Apply fixes. Show user diff. Iterate until APPROVED.
+9. **Write handoff** to `project-docs/specs/YYYY-MM-DD-<topic>-handoff.md` using `skills/brainstorm/handoff-template.md`
+10. **Stop.** Print: `Brainstorm complete. Spec at <path>. Handoff at <path>. Run /clear or open a new session, then invoke /claude-scaffolding:plan-writing.`
 
 ## Process Flow
 
 ```dot
 digraph brainstorming {
     "Explore project context" [shape=box];
-    "Visual questions ahead?" [shape=diamond];
-    "Offer Visual Companion\n(own message, no other content)" [shape=box];
     "Ask clarifying questions" [shape=box];
     "Propose 2-3 approaches" [shape=box];
     "Present design sections" [shape=box];
@@ -44,7 +46,10 @@ digraph brainstorming {
     "Write design doc" [shape=box];
     "Spec self-review\n(fix inline)" [shape=box];
     "User reviews spec?" [shape=diamond];
-    "Invoke plan-writing skill" [shape=doublecircle];
+    "Subagent spec review" [shape=box];
+    "Subagent approves?" [shape=diamond];
+    "Write handoff" [shape=box];
+    "STOP" [shape=doublecircle];
 
     "Explore project context" -> "Ask clarifying questions";
     "Ask clarifying questions" -> "Propose 2-3 approaches";
@@ -55,11 +60,15 @@ digraph brainstorming {
     "Write design doc" -> "Spec self-review\n(fix inline)";
     "Spec self-review\n(fix inline)" -> "User reviews spec?";
     "User reviews spec?" -> "Write design doc" [label="changes requested"];
-    "User reviews spec?" -> "Invoke plan-writing skill" [label="approved"];
+    "User reviews spec?" -> "Subagent spec review" [label="approved"];
+    "Subagent spec review" -> "Subagent approves?";
+    "Subagent approves?" -> "Write design doc" [label="fixes"];
+    "Subagent approves?" -> "Write handoff" [label="clean"];
+    "Write handoff" -> "STOP";
 }
 ```
 
-**The terminal state is invoking plan-writing.** Do NOT invoke any development skill, or any other implementation skill. The ONLY skill you invoke after brainstorming is plan-writing.
+**The terminal state is "handoff written, session stops".** Do NOT invoke plan-writing automatically. The user runs /clear and starts a fresh session before plan-writing.
 
 ## The Process
 
@@ -126,10 +135,9 @@ After the spec review loop passes, ask the user to review the written spec befor
 
 Wait for the user's response. If they request changes, make them and re-run the spec review loop. Only proceed once the user approves.
 
-**Implementation:**
+## After the Handoff
 
-- Invoke the plan-writing skill to create a detailed implementation plan
-- Do NOT invoke any other skill. plan-writing is the next step.
+Print the stop message described in checklist step 10. Do NOT invoke plan-writing or any other skill.
 
 ## Key Principles
 
