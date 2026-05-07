@@ -3,6 +3,8 @@ name: subagent-driven-development
 description: Use when executing implementation plans with independent tasks in the current session
 ---
 
+> **Pipeline position:** stage 3 of 3 — see [`reference/pipeline-flow.md`](../../reference/pipeline-flow.md).
+
 # Subagent-Driven Development
 
 If the Experimental claude team is available ask if we should run as a team. If yes then execute as a team with relevant team members in the loop. Always have at least one member acting as devils advocate when reviewing the implementers work separate from the code quality reviewer.
@@ -39,6 +41,12 @@ digraph when_to_use {
 - Fresh subagent per task (no context pollution)
 - Two-stage review after each task: spec compliance first, then code quality
 - Faster iteration (no human-in-loop between tasks)
+
+## Source of plan
+
+The approved plan is the **plan-mode plan file from the previous session** (the user runs `ExitPlanMode` after `plan-writing`, which surfaces the plan into the active session context). Extract tasks directly from that content. If the user manually saved the plan elsewhere and supplies a path, read that path instead.
+
+Do NOT search `project-docs/plans/` — `plan-writing` no longer writes there.
 
 ## The Process
 
@@ -133,7 +141,7 @@ Implementer subagents report one of four statuses. Handle each appropriately:
 ```
 You: I'm using Subagent-Driven Development to execute this plan.
 
-[Read plan file once: docs/superpowers/plans/feature-plan.md]
+[Read plan once: plan from current plan-mode session]
 [Extract all 5 tasks with full text and context]
 [Create TodoWrite with all tasks]
 
