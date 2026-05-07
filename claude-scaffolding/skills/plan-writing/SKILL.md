@@ -3,6 +3,8 @@ name: plan-writing
 description: Use when you have a spec or requirements for a multi-step task, before touching code
 ---
 
+> **Pipeline position:** stage 2 of 3 — see [`reference/pipeline-flow.md`](../../reference/pipeline-flow.md).
+
 # Writing Plans
 
 ## Overview
@@ -15,9 +17,17 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 
 **Context:** This should be run in a dedicated worktree (created by brainstorming skill).
 
-**Save plans to:** in the repo .claude folder under `project-docs/plans/YYYY-MM-DD-<feature-name>.md`
+## Inputs
 
-- (User preferences for plan location override this default)
+This skill expects a spec and a handoff. Read both before drafting the plan:
+- **Spec path** — read it from the handoff's frontmatter (`spec_path`).
+- **Handoff path** — provided by the user when they invoke the skill, or located in `project-docs/specs/`.
+
+If either is missing, stop and ask the user for the path. Do not draft a plan without both inputs.
+
+## Plan home
+
+The plan lives in the **plan-mode plan file** for the current session. Do not write a separate file under `project-docs/plans/`. After the human approves and the user runs `ExitPlanMode`, the plan-mode file is the single source of truth that `subagent-driven-development` consumes.
 
 ## Scope Check
 
@@ -48,19 +58,32 @@ Always ensure the plan is written in proper markdown using frontmatter.
 
 **Every plan MUST start with this frontmatter header:**
 
-```markdown
+```yaml
 ---
 title: "[Feature Name] Implementation Plan"
 goal: "One sentence describing what this builds"
 architecture: "2-3 sentences about approach"
 tech_stack:
   - Technology1
-  - Technology2
+spec_path: <ABSOLUTE PATH TO SPEC>
+handoff_path: <ABSOLUTE PATH TO HANDOFF>
+implementation_method: "<one-line summary of the chosen method>"
+skills_to_use:
+  - claude-scaffolding:subagent-driven-development
+  - claude-scaffolding:tdd
+  - claude-scaffolding:finishing-branch
 date: YYYY-MM-DD
 ---
-
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 ```
+
+## Plan body MUST contain
+
+Near the top of the plan body (under the frontmatter), include these sections — every plan, no exceptions:
+
+1. **Implementation method** — restate the chosen approach in 2-3 sentences and the rationale (why this method over alternatives). Without this, the plan is invalid and must be rewritten.
+2. **Files referenced** — the spec, the handoff, and any coding-guidelines files relevant to this work. Use absolute paths.
+3. **Skills used during execution** — copy from frontmatter, with a one-line note for each on when it is invoked.
+4. **Definition of done** — overall completion criteria. Each task additionally has its own "done when" criterion in its step list.
 
 ## Task Structure
 
@@ -123,36 +146,20 @@ Every step must contain the actual content an engineer needs. These are **plan f
 - Exact commands with expected output
 - DRY, YAGNI, TDD, frequent commits
 
-## Self-Review
+## Subagent Plan Review (always FIRST, before human review)
 
-After writing the complete plan, look at the spec with fresh eyes and check the plan against it. This is a checklist you run yourself — not a subagent dispatch.
+Before showing the plan to the human, dispatch the plan-reviewer subagent with `skills/plan-writing/plan-reviewer-prompt.md`. The agent reads the plan, the spec, and the handoff, and reports either `APPROVED` or a list of issues.
 
-**1. Spec coverage:** Skim each section/requirement in the spec. Can you point to a task that implements it? List any gaps.
+Apply all `BLOCKING` issues inline. For `OBSERVATION` issues, decide case-by-case whether to address. Re-dispatch the reviewer until it returns `APPROVED`.
 
-**2. Placeholder scan:** Search your plan for red flags — any of the patterns from the "No Placeholders" section above. Fix them.
+## Human Approval
 
-**3. Type consistency:** Do the types, method signatures, and property names you used in later tasks match what you defined in earlier tasks? A function called `clearLayers()` in Task 3 but `clearFullLayers()` in Task 7 is a bug.
+Only after the plan-reviewer returns `APPROVED`, present the plan to the human. Iterate on their feedback. The skill is complete when the human explicitly approves and runs `ExitPlanMode`.
 
-If you find issues, fix them inline. No need to re-review — just fix and move on. If you find a spec requirement with no task, add the task.
+## After approval
 
-## Execution Handoff
+When the human approves and runs `ExitPlanMode`, print:
 
-After saving the plan, offer execution choice:
+> Plan approved. Next: run `/claude-scaffolding:subagent-driven-development` to execute. The plan-mode plan is the source of truth — do not re-draft.
 
-**"Plan complete and saved to `project-docs/plans/<filename>.md`. Two execution options:**
-
-**1. Subagent-Driven (recommended)** - I dispatch a fresh subagent per task, review between tasks, fast iteration
-
-**2. Inline Execution** - Execute tasks in this session using executing-plans, batch execution with checkpoints
-
-**Which approach?"**
-
-**If Subagent-Driven chosen:**
-
-- **REQUIRED SUB-SKILL:** Use claude-scaffolding:subagent-driven-development
-- Fresh subagent per task + two-stage review
-
-**If Inline Execution chosen:**
-
-- **REQUIRED SUB-SKILL:** Use superpowers:executing-plans
-- Batch execution with checkpoints for review
+Do not auto-invoke the next skill.
