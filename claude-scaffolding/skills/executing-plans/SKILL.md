@@ -3,6 +3,8 @@ name: executing-plans
 description: Use when you have a written implementation plan to execute in a separate session with review checkpoints
 ---
 
+> **Pipeline position:** alternate execution path (replaces `subagent-driven-development` when human-paced execution is preferred) — see [`../../reference/pipeline-flow.md`](../../reference/pipeline-flow.md).
+
 # Executing Plans
 
 ## Overview

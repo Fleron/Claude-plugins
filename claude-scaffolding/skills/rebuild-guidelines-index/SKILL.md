@@ -3,6 +3,8 @@ name: rebuild-guidelines-index
 description: "Rebuild navigational index files for coding guidelines. Run after adding, removing, or modifying guideline files in reference/coding-guidelines/."
 ---
 
+> **Pipeline position:** maintenance task; not part of the main pipeline — see [`../../reference/pipeline-flow.md`](../../reference/pipeline-flow.md).
+
 # Rebuild Guidelines Index
 
 Generate navigational index files for `reference/coding-guidelines/` so explorer agents can efficiently locate relevant guidelines without reading every file.

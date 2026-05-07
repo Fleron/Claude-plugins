@@ -3,6 +3,8 @@ name: test-driven-development
 description: Use when implementing any feature or bugfix, before writing implementation code
 ---
 
+> **Pipeline position:** invoked by implementer subagents during execution — see [`../../reference/pipeline-flow.md`](../../reference/pipeline-flow.md).
+
 # Test-Driven Development (TDD)
 
 ## Overview
