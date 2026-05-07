@@ -1,7 +1,7 @@
 ---
 name: spec-compliance-reviewer
 description: |
-  Use this agent to verify that an implementation matches its specification. Dispatch with two inputs: the full task spec text and the implementer's report. The agent reads the actual code, compares it line-by-line against requirements, and reports compliance or issues with file:line references.
+  Reviews specs for quality at the brainstorm gate (placeholders, ambiguity, internal consistency, scope) AND verifies code matches spec at the execution gate. The dispatch prompt determines mode — see `skills/brainstorm/spec-quality-review-prompt.md` for brainstorm-gate use, `reference/spec-reviewer-prompt.md` for execution-gate use.
 model: sonnet
 ---
 

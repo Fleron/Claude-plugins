@@ -4,6 +4,8 @@ description: Use when receiving code review feedback, before implementing sugges
 model: sonnet
 ---
 
+> **Pipeline position:** post-merge feedback loop — see [`../../reference/pipeline-flow.md`](../../reference/pipeline-flow.md).
+
 # Code Review Reception
 
 ## Overview
