@@ -1,0 +1,39 @@
+{
+  "name": "my-plugins",
+  "version": "2.1.0",
+  "description": "An agentic skills framework & software development methodology that works: planning, TDD, debugging, and collaboration workflows.",
+  "author": {
+    "name": "Emil Fleron",
+  },
+  "repository": "https://github.com/Fleron/Claude-plugins",
+  "keywords": [
+    "brainstorming",
+    "subagent-driven-development",
+    "skills",
+    "planning",
+    "tdd",
+    "debugging",
+    "code-review",
+    "workflow"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "my-plugins",
+    "shortDescription": "Planning, brainstorming, plan execution, TDD, and delivery workflows for coding agents",
+    "longDescription": "Use my-plugins to guide agent work through brainstorming, implementation planning, test-driven development, systematic debugging, parallel execution, code review, and finish-the-branch workflows.",
+    "developerName": "Emil Fleron",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "I've got an idea for something I'd like to build.",
+      "Let's add a feature to this project.",
+      "lets implement the spec"
+    ],
+    "brandColor": "#F59E0B",
+    "screenshots": []
+  }
+}

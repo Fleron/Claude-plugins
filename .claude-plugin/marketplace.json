@@ -9,32 +9,32 @@
   "plugins": [
     {
       "name": "commit-commands",
-      "source": "./commit-commands",
+      "source": "./skills/commit-commands",
       "description": "Adds a /commit and /commit-push-pr skill for quick code commits with conventional commit messages."
     },
     {
       "name": "interview",
-      "source": "./interview",
+      "source": "./skills/interview",
       "description": "Adds a /feature-interview skill for extensive interview questionare for feature development."
     },
     {
       "name": "create-feature",
-      "source": "./create-feature",
+      "source": "./skills/create-feature",
       "description": "Adds a thorough and complete end 2 end workflow for feature development."
     },
     {
       "name": "handoff",
-      "source": "./handoff",
+      "source": "./skills/handoff",
       "description": "Adds an alternative to /compact through /handoff."
     },
     {
       "name": "claudemd-improve",
-      "source": "./claudemd-improve",
+      "source": "./skills/claudemd-improve",
       "description": "adds an automatic review and improve of global and local CLAUDE.md"
     },
     {
       "name": "claude-scaffolding",
-      "source": "./claude-scaffolding",
+      "source": "./skills/claude-scaffolding",
       "description": "A full scaffolding and claude harness for e2e development"
     }
 
