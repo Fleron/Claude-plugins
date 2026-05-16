@@ -36,7 +36,13 @@
       "name": "claude-scaffolding",
       "source": "./skills/claude-scaffolding",
       "description": "A full scaffolding and claude harness for e2e development"
+    },
+    {
+      "name": "autopilot",
+      "source": "./skills/autopilot",
+      "description": "A full scaffolding and claude harness for automated development together with claude-control."
     }
+
 
   ]
 }
