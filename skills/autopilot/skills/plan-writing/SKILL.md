@@ -20,16 +20,19 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 ## Inputs
 
 This skill expects an accepted spec and a handoff. Read both before drafting the plan:
+
 - **Spec path** — read it from the handoff's frontmatter (`spec_path`).
 - **Handoff path** — provided by the user when they invoke the skill, or located in `project-docs/specs/`.
 
 If either is missing, stop and ask the user for the path. Do not draft a plan without both inputs.
+If the user invoked this skill without a spec you should point to the claude-scaffolding skill instead for plan-writing
 
 The spec is accepted only when the associated goal metadata shows `workflow_stage: spec_accepted` or the `spec_pr_url` / `spec_pr_number` points to a merged GitHub PR. Use `gh auth status` and `gh pr view <number> --json number,url,state,mergedAt` for the first supported backend. If `gh` is missing, unauthenticated, or the PR is not merged, stop with a clear blocked state.
+The user might override this if asked but you may never assume.
 
 ## Plan home
 
-The plan lives in the **plan-mode plan file** for the current session. Do not write a separate file under `project-docs/plans/`. After the human approves and the user runs `ExitPlanMode`, the plan-mode file is the single source of truth that `subagent-driven-development` consumes.
+The plan lives in the **plan-mode plan file** for the current session. Do not write a separate file under `.claude-control/plans/`. After the human approves and the user runs `ExitPlanMode`, the plan-mode file is the single source of truth that `subagent-driven-development` consumes.
 
 ## Scope Check
 
@@ -37,7 +40,7 @@ If the spec covers multiple independent subsystems, it should have been broken i
 
 ## File Structure
 
-Before defining tasks, map out which files will be created or modified and what each one is responsible for. Thisq is where decomposition decisions get locked in.
+Before defining tasks, map out which files will be created or modified and what each one is responsible for. This is where decomposition decisions get locked in.
 
 - Design units with clear boundaries and well-defined interfaces. Each file should have one clear responsibility.
 - You reason best about code you can hold in context at once, and your edits are more reliable when files are focused. Prefer smaller, focused files over large ones that do too much.
@@ -86,6 +89,8 @@ Near the top of the plan body (under the frontmatter), include these sections �
 2. **Files referenced** — the spec, the handoff, and any coding-guidelines files relevant to this work. Use absolute paths.
 3. **Skills used during execution** — copy from frontmatter, with a one-line note for each on when it is invoked.
 4. **Definition of done** — overall completion criteria. Each task additionally has its own "done when" criterion in its step list.
+
+Ask the user but always assume that tests should pass and be all green. performance should not have been impacted. code quality review should have passed if applicable.
 
 ## Task Structure
 
@@ -162,6 +167,6 @@ Only after the plan-reviewer returns `APPROVED`, present the plan to the human. 
 
 When the human approves and runs `ExitPlanMode`, print:
 
-> Plan approved and saved by ExitPlanMode. Mark the goal `workflow_stage: plan_ready` with `plan_path`, then dispatch `/claude-scaffolding:subagent-driven-development` to execute. The relay-saved `.claude-control/plans/YYYY-MM-DD-*.md` file is the source of truth — do not re-draft.
+> Plan approved and saved by ExitPlanMode. Mark the goal `workflow_stage: plan_ready` with `plan_path`, then dispatch `/autopilot:subagent-driven-development` to execute. The relay-saved `.claude-control/plans/YYYY-MM-DD-*.md` file is the source of truth — do not re-draft.
 
 Do not auto-invoke the next skill.

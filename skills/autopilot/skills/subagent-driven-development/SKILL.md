@@ -42,11 +42,10 @@ digraph when_to_use {
 - Two-stage review after each task: spec compliance first, then code quality
 - Faster iteration (no human-in-loop between tasks)
 
-## Source of plan
+## Source of scope
 
-The approved plan is the relay-saved `.claude-control/plans/YYYY-MM-DD-*.md` artifact from the previous Plan Mode session. The active goal must have `workflow_stage: plan_ready` and `plan_path` pointing at that approved file. Read that file and extract tasks directly from it. If the goal is not `plan_ready`, or `plan_path` is missing/unreadable, stop with a clear blocked state.
-
-Do NOT search `project-docs/plans/` — `plan-writing` no longer writes there.
+The plan is in context but if needed a version should also have been saved in .claude-control/plans
+The active goal should have `workflow_stage: plan_ready` and `plan_path` pointing at that approved file. Read that file and extract tasks directly from it. If the goal is not `plan_ready`, or `plan_path` is missing/unreadable, stop with a clear blocked state.
 
 ## The Process
 
@@ -306,3 +305,7 @@ Done!
 **Transitive dependencies:**
 
 - The `code-quality-reviewer` agent dispatches the `code-guidelines-explorer` subagent internally to find relevant coding guidelines. You do not need to dispatch the explorer yourself — the quality reviewer handles this automatically.
+
+## Additional improvements
+
+Always end with a quick self review pass of the current iteration plan and so on and self criticise if there are missing instructions, convoluted instructions or wrong all together in the skills used. Recommend to user but dont implement anything without acceptance.

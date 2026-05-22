@@ -11,6 +11,8 @@ Help turn ideas into fully formed designs and specs through natural collaborativ
 
 Start by understanding the current project context, then ask questions one at a time to refine the idea. Once you understand what you're building, present the design and get user approval.
 
+You are sitting in the interface between product and tech and you have equal responsibility to ask important questions regarding product and business decisions as well as deep technical questions if they relate to moving a feature, design or idea towards a well defined and implemented technical solution.
+
 <HARD-GATE>
 Do NOT invoke any other skill, write any code, scaffold any project, or take any implementation action until the spec is written, the subagent spec-quality review has passed, the handoff doc is written, and the spec PR is open. After the spec PR is open, STOP. The human accepts the spec by merging that PR.
 </HARD-GATE>
@@ -24,17 +26,18 @@ Every project goes through this process. A todo list, a single-function utility,
 You MUST create a task for each of these items and complete them in order:
 
 1. **Explore project context** — check files, docs, recent commits
-2. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
+2. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria. This part you should iterate on until we have enough information to move forward.
 3. **Propose 2-3 approaches** — with trade-offs and your recommendation
 4. **Present design** — in sections scaled to their complexity, get user approval after each section
-5. **Write spec** to `project-docs/specs/YYYY-MM-DD-<topic>-design.md`
+5. **Write spec** to `.claude-control/specs/YYYY-MM-DD-<topic>-design.md`. if not user specifies a different location.
 6. **Inline spec self-review** — placeholder/contradiction/scope/ambiguity sweep
 7. **User reviews written spec; iterate until approved**
 8. **Subagent spec review** — dispatch `claude-scaffolding:spec-compliance-reviewer` with `skills/brainstorm/spec-quality-review-prompt.md`. Apply fixes. Show user diff. Iterate until APPROVED.
-9. **Write handoff** to `project-docs/specs/YYYY-MM-DD-<topic>-handoff.md` using `skills/brainstorm/handoff-template.md`
-10. **Create spec PR** — create a branch, commit the spec and handoff, push, and open a GitHub PR with `gh pr create`.
-11. **Mark goal workflow** — update the goal metadata to `workflow_stage: spec_pr_open`, `spec_path`, `handoff_path`, `spec_pr_url`, and `spec_pr_number`.
-12. **Stop.** Print: `Brainstorm complete. Spec PR opened at <url>. Merge it to accept the spec; after merge, dispatch /claude-scaffolding:plan-writing.`
+9. **Write handoff** to `claude-control/specs/YYYY-MM-DD-<topic>-handoff.md` using `skills/brainstorm/handoff-template.md`.
+  the purpose of the handoff is for the next agent picking this up knows exactly what to do with the spec it gets handed. What skills to use. What files are needed to read and so on.
+10. **Create spec PR** — ALWAYS ASK THE USER BEFOREHAND if they want to run with spec driven review. if yes then. create a branch, commit the spec and handoff, push, and open a GitHub PR with `gh pr create`.
+11. **Mark goal workflow** — If this task was spawned through a claude-control goal then you must always update the goal metadata in the relevant goal file to `workflow_stage: spec_pr_open`, `spec_path`, `handoff_path`, `spec_pr_url`, and `spec_pr_number`.
+12. **Stop.** Print: `Brainstorm complete. Spec PR opened at <url>. Merge it to accept the spec; after merge, dispatch /autopilot:plan-writing.`
 
 ## Process Flow
 
@@ -56,6 +59,7 @@ digraph brainstorming {
     "STOP" [shape=doublecircle];
 
     "Explore project context" -> "Ask clarifying questions";
+    "Ask clarifying questions" -> "Ask clarifying questions" [label="iterate"];
     "Ask clarifying questions" -> "Propose 2-3 approaches";
     "Propose 2-3 approaches" -> "Present design sections";
     "Present design sections" -> "User approves design?";
@@ -121,11 +125,11 @@ Use AskUserQuestion for all user interactions in this process. Do not use free t
 
 **Documentation:**
 
-- Write the validated design (spec) to the project .claude folder under `project-docs/specs/YYYY-MM-DD-<topic>-design.md`
-  - (User preferences for spec location override this default)
+- Write the validated design (spec) to the project .claude-control folder under `/specs/YYYY-MM-DD-<topic>-design.md`
+  - (User preferences for spec location override this default. You should lead with asking for location but always present default location as the one specified above)
 
 **Spec Self-Review:**
-After writing the spec document, look at it with fresh eyes:
+After writing the spec document, Spawn a seperate agent with all context needed to review the current spec for completeness and issues: Always use opus for this consultance unless stated otherwise
 
 1. **Placeholder scan:** Any "TBD", "TODO", incomplete sections, or vague requirements? Fix them.
 2. **Internal consistency:** Do any sections contradict each other? Does the architecture match the feature descriptions?
