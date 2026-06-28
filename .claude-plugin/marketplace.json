@@ -46,6 +46,11 @@
       "name": "development-flow",
       "source": "./skills/development-flow",
       "description": "Lightweight Plan → Build → Ship feature workflow with plan-mode planning skills and standalone parallel-subagent build/ship reviews. No auto-PRs or worktrees."
+    },
+    {
+      "name": "claude-control-goals",
+      "source": "./skills/claude-control-goals",
+      "description": "Adds a minimal /goal wrapper around the installed ccctl goals CLI."
     }
   ]
 }

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Claude Control Goals"
+  short_description: "Drive goals through ccctl"
+  default_prompt: "Use $claude-control-goals to continue the next claude-control goal with ccctl."

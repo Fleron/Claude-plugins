@@ -1,0 +1,8 @@
+{
+  "name": "claude-control-goals",
+  "description": "Minimal /goal wrapper around the installed ccctl goals CLI",
+  "version": "1.0.0",
+  "author": {
+    "name": "Emil Fleron"
+  }
+}
