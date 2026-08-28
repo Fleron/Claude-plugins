@@ -1,7 +1,7 @@
 {
   "name": "development-flow",
   "description": "Lightweight Plan → Build → Ship feature workflow: plan-mode planning skills plus standalone parallel-subagent build and ship reviews. No auto-PRs, no worktrees — the human commits manually.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": {
     "name": "Emil Fleron"
   }
