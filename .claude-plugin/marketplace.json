@@ -51,6 +51,11 @@
       "name": "claude-control-goals",
       "source": "./skills/claude-control-goals",
       "description": "Adds a minimal /goal wrapper around the installed ccctl goals CLI."
+    },
+    {
+      "name": "ponytail-review",
+      "source": "./skills/ponytail-review",
+      "description": "Always-on over-engineering review pass, ported from DietrichGebert/ponytail's ponytail-review skill, that fires alongside any other code review to flag what can be deleted."
     }
   ]
 }

@@ -1,0 +1,8 @@
+{
+  "name": "ponytail-review",
+  "description": "Always-on over-engineering review pass, ported from DietrichGebert/ponytail's ponytail-review skill, that fires alongside any other code review to flag what can be deleted.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Emil Fleron"
+  }
+}
