@@ -45,7 +45,7 @@
     {
       "name": "development-flow",
       "source": "./skills/development-flow",
-      "description": "Feature planning producing a self-contained, outcome-focused plan, plus standalone parallel-subagent build and ship reviews and tailnet sharing. No stages, no auto-PRs, no worktrees."
+      "description": "Feature planning producing a self-contained, outcome-focused plan, plus standalone parallel-subagent build and ship reviews, PR babysitting and tailnet sharing. No stages, no auto-PRs, no worktrees."
     },
     {
       "name": "claude-control-goals",
