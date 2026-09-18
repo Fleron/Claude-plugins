@@ -45,7 +45,7 @@
     {
       "name": "development-flow",
       "source": "./skills/development-flow",
-      "description": "Feature planning producing a self-contained, outcome-focused plan, plus a parallel-lens code review (testing, context, change size, breaking changes), PR babysitting and tailnet sharing. No stages, no auto-PRs, no worktrees."
+      "description": "Feature planning producing a self-contained, outcome-focused plan, plan-to-issues to split it into delegable GitHub tasks, a parallel-lens code review (testing, context, change size, breaking changes), PR babysitting and tailnet sharing. No stages, no auto-PRs, no worktrees."
     },
     {
       "name": "claude-control-goals",

@@ -1,7 +1,7 @@
 {
   "name": "development-flow",
-  "description": "Feature planning that produces a self-contained, outcome-focused plan, plus a parallel-lens code review (testing, context, change size, breaking changes), PR babysitting and tailnet sharing. No stages, no auto-PRs, no worktrees. The human commits manually.",
-  "version": "3.0.0",
+  "description": "Feature planning that produces a self-contained, outcome-focused plan, plan-to-issues to split it into delegable GitHub tasks, a parallel-lens code review (testing, context, change size, breaking changes), PR babysitting and tailnet sharing. No stages, no auto-PRs, no worktrees. The human commits manually.",
+  "version": "3.1.0",
   "author": {
     "name": "Emil Fleron"
   }
