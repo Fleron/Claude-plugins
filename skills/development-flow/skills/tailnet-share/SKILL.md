@@ -1,6 +1,6 @@
 ---
 name: tailnet-share
-description: "Standalone. Publish an HTML artifact, report or presentation to the user's tailnet over HTTPS with Tailscale Serve, or set up the reusable share slots the first time. Use when asked to share, publish or send a link to a local file, or when a URL is wanted for something built in the session."
+description: "Use when the user asks to share, publish or send a link to a local HTML file, report or presentation, wants a URL for something built in the session, mentions tailnet or Tailscale Serve, or asks to set up sharing on a new machine."
 ---
 
 # Tailnet share

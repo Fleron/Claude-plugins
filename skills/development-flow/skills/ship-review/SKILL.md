@@ -1,6 +1,6 @@
 ---
 name: ship-review
-description: "Standalone final parallel-subagent review before shipping. Fans out N read-only reviewers, ranks findings with simple fixes for must-fixes, then offers a commit message. Publishing stays manual."
+description: "Use when the user says they want to ship, commit or open a PR for the current work and wants a last check first, asks for a go or no-go, or says ship-review."
 ---
 
 # Ship review

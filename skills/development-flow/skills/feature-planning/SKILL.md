@@ -1,6 +1,6 @@
 ---
 name: feature-planning
-description: "Interview that turns an idea into a self-contained, outcome-focused plan covering both product scope and technical approach. Use before any feature or non-trivial change. Ends by recording the plan, not by implementing it."
+description: "Use when the user wants to be interviewed about an idea, asks to grill them, wants a detailed spec, plan or issue written before any code, or says feature-planning. Also use before starting any feature or non-trivial change that has no plan yet."
 ---
 
 # Feature planning

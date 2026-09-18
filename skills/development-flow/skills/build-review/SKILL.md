@@ -1,6 +1,6 @@
 ---
 name: build-review
-description: "Standalone parallel-subagent code review of the current build. Fans out N read-only reviewers over the diff, then ranks findings."
+description: "Use when the user asks for a review of the current uncommitted work, wants several reviewers on the diff, asks what is wrong with what was just built, or says build-review. Mid-development, not a ship gate."
 ---
 
 # Build review
