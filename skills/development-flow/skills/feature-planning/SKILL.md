@@ -1,11 +1,11 @@
 ---
 name: feature-planning
-description: "Plan-mode interview that turns an idea into a self-contained, outcome-focused plan covering both product scope and technical approach. Use before any feature or non-trivial change. Ends by recording the plan, not by implementing it."
+description: "Interview that turns an idea into a self-contained, outcome-focused plan covering both product scope and technical approach. Use before any feature or non-trivial change. Ends by recording the plan, not by implementing it."
 ---
 
 # Feature planning
 
-**First action:** call `EnterPlanMode`. `Explore` the repo before asking anything the code can answer.
+Write no code and change no files until the plan is recorded. `Explore` the repo before asking anything the code can answer.
 
 ## Method
 
@@ -23,7 +23,7 @@ Then dispatch the `plan-reviewer` agent. Loop until it replies `approved, no blo
 
 ## Output
 
-The plan is the plan-mode plan. Emit exactly these headings:
+Present the plan in chat. Emit exactly these headings:
 
 ```markdown
 # <feature name>
@@ -65,4 +65,4 @@ Writing rules:
 
 ## Record
 
-After approval, `ExitPlanMode`, then `AskUserQuestion`: record the plan locally in `docs/tasks/<yyyy-mm-dd>-<slug>.md`, on a GitHub issue or milestone with `gh`, or not at all. Do that, then stop. Implementation is a separate decision.
+After approval, `AskUserQuestion`: record the plan locally in `docs/tasks/<yyyy-mm-dd>-<slug>.md`, on a GitHub issue or milestone with `gh`, or not at all. Do that, then stop. Implementation is a separate decision.
