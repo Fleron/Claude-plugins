@@ -3,8 +3,6 @@ name: tailnet-share
 description: "Standalone. Publish an HTML artifact, report or presentation to the user's tailnet over HTTPS with Tailscale Serve, or set up the reusable share slots the first time. Use when asked to share, publish or send a link to a local file, or when a URL is wanted for something built in the session."
 ---
 
-> **You are here:** tailnet-share — standalone, not a stage. See [reference/flow.md](../../reference/flow.md).
-
 # Tailnet share
 
 Tailscale Serve hands out a static directory as an HTTPS URL that only devices on the user's tailnet can reach. This is machine setup, not an application dependency. Slots are machine-wide and shared by every repository, worktree and agent session, so treat everything under the share root as belonging to someone else until proven otherwise.

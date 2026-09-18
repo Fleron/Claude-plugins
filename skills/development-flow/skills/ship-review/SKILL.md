@@ -3,8 +3,6 @@ name: ship-review
 description: "Standalone final parallel-subagent review before shipping. Fans out N read-only reviewers, ranks findings with simple fixes for must-fixes, then offers a commit message. Publishing stays manual."
 ---
 
-> **You are here:** ship-review — standalone, run any time. See [reference/flow.md](../../reference/flow.md).
-
 # Ship review
 
 `AskUserQuestion`: **how many parallel reviewers** to run.

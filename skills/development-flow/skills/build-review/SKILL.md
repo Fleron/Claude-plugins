@@ -1,9 +1,7 @@
 ---
 name: build-review
-description: "Standalone parallel-subagent code review of the current build. Fans out N read-only reviewers over the diff, then ranks findings. Run any time during development-flow."
+description: "Standalone parallel-subagent code review of the current build. Fans out N read-only reviewers over the diff, then ranks findings."
 ---
-
-> **You are here:** build-review — standalone, run any time. See [reference/flow.md](../../reference/flow.md).
 
 # Build review
 
