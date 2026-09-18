@@ -1,76 +1,68 @@
 ---
 name: feature-planning
-description: "Stage 1 of development-flow. Plan-mode interview that captures product/business requirements — never technical detail — into a feature-plan. Use before any new feature."
+description: "Use when the user wants to be interviewed about an idea, asks to grill them, wants a detailed spec, plan or issue written before any code, or says feature-planning. Also use before starting any feature or non-trivial change that has no plan yet."
 ---
-
-> **You are here:** stage 1 of 4 — feature-planning. See [reference/flow.md](../../reference/flow.md).
 
 # Feature planning
 
-**First action:** call `EnterPlanMode`.
-**Skip this stage** when there is no product decision to make, only a technical one. Say so, and go to `development-flow:implementation-planning`.
+Write no code and change no files until the plan is recorded. `Explore` the repo before asking anything the code can answer.
 
-## The interview
+## Method
 
-Interview the user relentlessly until you reach a shared understanding. Map this as a **design tree**: every decision branches into the decisions that hang off it.
-
-Work the tree in **rounds**. The **frontier** is every decision whose prerequisites are already settled: the questions you can ask _now_ without guessing at answers you haven't heard yet. Ask the whole frontier in one round: number each question and give your recommended answer. Then wait for the user's answers before the next round.
-
-Format a round like so:
+Interview until shared understanding. Each round: about five questions aimed at the biggest unknowns right now, numbered, each with your recommended answer. Wait for the answers, then recompute what is still unknown and ask the next round. A question that depends on an answer still open belongs to a later round.
 
 ```
-❓ **Q1** - **<question title>**: <question body, might be multiple paragraphs, including multiple choices>
+❓ **Q1** - **<title>**: <question, with options where they exist>
 
-➡️ <your recommended answer>
-
----
-
-❓ **Q2** - **<question title>**: <question body, might be multiple paragraphs, including multiple choices>
-
-➡️ <your recommended answer>
+➡️ <recommended answer>
 ```
 
-Use `AskUserQuestion` instead for any question that reduces to discrete options — do this now or defer, in scope or out, this file or that one. Wide or open questions stay in the round format above.
+Use `AskUserQuestion` for anything that reduces to discrete options. Facts come from the repo or a sub-agent, never from the user. Decisions are the user's. Push back on scope, offer two or three approaches with trade-offs, lead with your recommendation. Done when nothing is left silently assumed.
 
-Each round the user answers reshapes the tree: settled decisions push the frontier outward and unblock questions that depended on them. Recompute the frontier and ask the next round. A question whose answer depends on another question still open in this round belongs to a _later_ round, not this one.
+Then dispatch the `plan-reviewer` agent. Loop until it replies `approved, no blocking issues`. Then human approval.
 
-Finding _facts_ is your job, never the user's. When a frontier question needs a fact from the environment (filesystem, tools, etc.), dispatch a sub-agent to find it; don't ask the user for anything you could look up yourself. Don't block on it: a running exploration is an unsettled prerequisite, so only the questions downstream of it wait for the sub-agent to report; ask the rest of the frontier now. The _decisions_ are the user's: put each to them and wait.
+## Output
 
-The interview is done when the frontier is empty: every branch visited, nothing left silently assumed.
-
-## The contract
-
-The feature-plan is the plan-mode plan. Emit exactly this:
+Present the plan in chat. Emit exactly these headings:
 
 ```markdown
 # <feature name>
 
-## Problem
-<who is hurt, how, and what it costs. No solution.>
+## Outcome
+What a user can do after this ships, in plain language. The commands to run and what they see.
 
-## Behaviours
-B1. WHEN <trigger> THE <subject> SHALL <observable result>.
-B2. ...
+## Context
+How the relevant parts of the repo fit together today. Full repository-relative paths, exact
+function and module names, where new files go. Define every term that is not ordinary English
+the first time, and say where it shows up in this repo.
+
+## Approach
+The technical design and how it slots into the existing structure. Which existing mechanisms
+extend, what is new and where it lives. Every ambiguity resolved here, with why.
 
 ## Not doing
 - <thing a reader would otherwise assume is included>
 
 ## Decisions
-D1. <decision> — <the cost we accept by taking it>.
+D1. <decision> — <the cost we accept by taking it>
 
-## Done when
-<how we will know, in the real world, that this worked>
+## Steps
+1. <idempotent step, safe to rerun> → check: <how you know it worked>
 
-Next: development-flow:implementation-planning
+## Validation
+<working directory> `<exact command>` → <expected output>. Behaviour a human can verify, plus
+a scenario that proves the change does something beyond compiling.
 ```
 
-- **Behaviours are observable by a user or the business.** Same grammar as stage 2, one altitude up. Stage 2 adds the technical behaviours and invariants this level cannot see, and maps all of them onto files and tests.
-- **Every tradeoff you accepted is a D-line, never prose.** If taking it costs something — a regression, a delay, a worse path for some users — that cost is written after the dash. A cost buried in a paragraph reads as settled, and the human will not challenge it.
-- **`Not doing` is scope left out. `Decisions` is cost taken on.** They are different and both are required.
-- **No technical detail.** No files, functions, schemas or libraries. That is stage 2's job.
+Writing rules:
 
-## Review and approval
+- **Self-contained.** A novice with only this document and the repo can do the work. No "as discussed", no pointers to other docs in place of the explanation.
+- **Outcome first.** Acceptance is behaviour ("GET /health returns 200 with body OK"), never an internal attribute ("added a HealthCheck struct"). For internal changes, show how the effect is still demonstrable.
+- **Resolve, don't delegate.** Ambiguity gets settled in the plan with a reason. Over-explain user-visible effects, under-specify incidental implementation detail.
+- **Safe to rerun.** Steps are idempotent. Anything destructive spells out backup or fallback.
+- **Every tradeoff is a D-line.** A cost buried in prose reads as settled.
+- **Evidence.** Where a step produces output that proves success, include a short indented example.
 
-Dispatch the `plan-reviewer` agent. Tell it this is a feature-plan, and to also flag any technical detail that leaked in. Loop until it replies `approved, no blocking issues`, then human approval → `ExitPlanMode` (saves + clears context).
+## Record
 
-Always carry the next step in the plan so it is picked up automatically.
+After approval, `AskUserQuestion`: record the plan locally in `docs/tasks/<yyyy-mm-dd>-<slug>.md`, on a GitHub issue or milestone with `gh`, or not at all. Do that, then stop. Implementation is a separate decision.
