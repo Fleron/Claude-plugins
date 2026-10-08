@@ -1,9 +1,9 @@
 {
   "name": "my-plugins",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "An agentic skills framework & software development methodology that works: planning, TDD, debugging, and collaboration workflows.",
   "author": {
-    "name": "Emil Fleron",
+    "name": "Emil Fleron"
   },
   "repository": "https://github.com/Fleron/Claude-plugins",
   "keywords": [
