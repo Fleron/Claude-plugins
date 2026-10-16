@@ -81,8 +81,6 @@ to the user in full.
   wrong result". No case, no finding.
 - Re-read the lines and confirm: the caller exists, the value can really be
   empty, the code really is unused.
-- A shortcut marked with a comment that names its limit is a
-  decision, not a finding, unless the expected load already crosses it.
 - Propose the smallest fix that works. Prefer fixes that delete code. Never
   add layers, frameworks or config the problem does not need.
 - No style taste, no "consider", no vague worries.
