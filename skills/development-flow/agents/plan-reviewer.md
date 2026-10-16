@@ -33,6 +33,9 @@ or a complete plan read as warranted.
   own line.
 - A cost accepted without being named: a regression, a delay, a worse path for some users.
 - Something the plan will obviously need and never mentions.
+- A missing account of the current data flow and ownership, or an unresolved change to data,
+  state or architectural boundaries that could change the implementation direction.
+- Verification that misses the proposed behaviour or the repository's required checks.
 
 **Simplicity — is anything bigger than the job needs?**
 
@@ -40,6 +43,8 @@ or a complete plan read as warranted.
 - Speculative scope: an outcome nobody asked for, flexibility with no evidence it is needed.
 - If eight steps could be three, say so.
 - Every step should trace back to the Outcome. Flag the ones that do not.
+- Check the proposed design against the repo's existing mechanisms and patterns. Prefer the
+  smallest coherent change; do not demand incidental function names or low-level design.
 
 ## Reply format
 
