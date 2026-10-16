@@ -56,6 +56,11 @@
       "name": "ponytail",
       "source": "./skills/ponytail",
       "description": "Lazy senior dev mode. Forces the simplest, shortest solution that actually works: YAGNI, stdlib first, no unrequested abstractions."
+    },
+    {
+      "name": "understand",
+      "source": "./skills/understand",
+      "description": "Adds /understand: a four-section visual briefing of a PR, branch, plan or work in progress, from the system picture down to the code."
     }
   ]
 }

@@ -1,0 +1,8 @@
+{
+  "name": "understand",
+  "version": "0.1.0",
+  "description": "Adds /understand: a four-section visual briefing of a PR, branch, plan or work in progress, from the system picture down to the code.",
+  "author": {
+    "name": "Emil Fleron"
+  }
+}

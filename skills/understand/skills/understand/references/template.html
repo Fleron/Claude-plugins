@@ -1,0 +1,464 @@
+<title>PR 42 order email briefing</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<!--
+  /understand page template. Copy this file, keep the <style> block unchanged, drop this comment
+  and the section comments, and replace the example content block by block. The example (a made-up
+  PR, acme-example/shop#42) shows one filled block of each kind; derive every diagram from the mapper's facts, never
+  from the example's shapes.
+
+  Diagram geometry, all hand-placed SVG, never Mermaid:
+  - Picture diagrams: viewBox width 900. Node <g class="n"> = rect + .t title (14px, y = top + 27)
+    + .s sublines (12px mono, 17-20px apart). Node classes: .new (added), .ext (outside the repo).
+    Sublines: .s.add for new names, .s.gone for removed names (struck through).
+  - Edges: <path class="e sign|sync|key|old"> with the matching marker. Number labels in flow
+    order ("1 sign in"); the same numbers appear as badges on section 2 cards.
+  - Labels: .l text sits 8px above a horizontal edge, never inside a node rect, and its estimated
+    width fits between the nodes it sits between. Estimate 6.5px per character for .l and .t,
+    7.2px for the monospace .s sublines, which must also fit inside their node rect.
+  - Sequence diagrams: participant i (from 0) is centred at x = 110 + 220*i, header rect 180x40
+    at y=10, lifeline from y=50. The viewBox width is 220 * participants + 20 (900 fits four, 1120
+    fits five). First message at y=96, then 44px per message; a self step is a 40px loop to the
+    right that is 20px tall and takes two slots (88px). Message label centred 8px above its arrow;
+    a self step's label sits right of the loop. Return messages use .e.ret.
+    Number messages 1..n; the step list beside the diagram has exactly the same numbers, and every
+    step in it has a link or a local path:line.
+  - Stretch the viewBox height to the last element + 20px. Keep every label inside the viewBox.
+
+  Evidence marks on file chips (section 2) and step lists (section 3):
+  - .chip.add / .chip.mod / .chip.del / .chip.test as in the example; links go to GitHub at the
+    head SHA, deleted files link to the base SHA. Counts are "+added −removed" per file.
+  - Show every changed file except lockfiles, generated files and docs. A concept with more than
+    ten files shows its eight largest and one plain chip "+n more".
+  - .chip.local: change exists only locally; no link, show path:line as text.
+  - .chip.proposed: a plan's new file that does not exist yet; no link.
+-->
+<style>
+/* Layout: four stacked sections, each about one screen, depth increases downward; sticky index on top. */
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --fg: #16181d;
+  --muted: #5b6270;
+  --line: #d9dde4;
+  --accent: #2456d6;
+  --accent-soft: #e6edfd;
+  --sync: #b26a00;
+  --sync-soft: #fbefdc;
+  --gone: #b3261e;
+  --gone-soft: #fbe5e3;
+  --c-1: #2456d6; --c-2: #6b7385; --c-3: #0f8a7e; --c-4: #b26a00; --c-5: #7a4fc9; --c-6: #b0477f; --c-7: #8d96a6;
+  --font: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111318; --surface: #191c23; --fg: #e8eaef; --muted: #9aa2b1; --line: #2c313b;
+    --accent: #7ea2ff; --accent-soft: #1d2a4d; --sync: #f0a640; --sync-soft: #3a2a12;
+    --gone: #ff8a80; --gone-soft: #3d1b1a;
+    --c-1: #7ea2ff; --c-2: #a3abba; --c-3: #4fd1c0; --c-4: #f0a640; --c-5: #b694ff; --c-6: #f08cc0; --c-7: #6d7586;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111318; --surface: #191c23; --fg: #e8eaef; --muted: #9aa2b1; --line: #2c313b;
+  --accent: #7ea2ff; --accent-soft: #1d2a4d; --sync: #f0a640; --sync-soft: #3a2a12;
+  --gone: #ff8a80; --gone-soft: #3d1b1a;
+  --c-1: #7ea2ff; --c-2: #a3abba; --c-3: #4fd1c0; --c-4: #f0a640; --c-5: #b694ff; --c-6: #f08cc0; --c-7: #6d7586;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 15px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1000px; margin: 0 auto; }
+a { color: var(--accent); text-underline-offset: 2px; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+code { font-family: var(--mono); font-size: 0.86em; overflow-wrap: anywhere; }
+html { scroll-behavior: smooth; scroll-padding-top: 52px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+nav.index {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--line);
+}
+nav.index .wrap { display: flex; gap: 4px 18px; flex-wrap: wrap; padding-block: 10px; font-size: 13px; }
+nav.index a { color: var(--muted); text-decoration: none; }
+nav.index a:hover { color: var(--fg); }
+nav.index b { color: var(--fg); font-weight: 600; margin-right: 6px; }
+
+header.top { padding-block: 40px 8px; }
+.eyebrow { font-family: var(--mono); font-size: 12px; color: var(--muted); letter-spacing: 0.02em; }
+h1 { font-size: clamp(24px, 3.4vw, 34px); line-height: 1.2; margin: 6px 0 0; font-weight: 650; text-wrap: balance; letter-spacing: -0.01em; }
+
+section.page { padding-block: 40px 48px; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+section.page:last-of-type { border-bottom: 0; }
+.page-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.page-num { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+h2 { font-size: 21px; margin: 0; font-weight: 650; text-wrap: balance; }
+h3 { font-size: 13px; margin: 0 0 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.lede { margin: 0; max-width: 68ch; color: var(--muted); }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; min-width: 0; }
+.diagram { overflow-x: auto; }
+/* 840px keeps 12px SVG text at 11px or more on a 900-wide viewBox; narrower screens scroll the diagram, not the page. */
+.diagram svg { display: block; width: 100%; min-width: 840px; height: auto; }
+.ba-label { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.stack { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+
+/* svg */
+.n rect { fill: var(--surface); stroke: var(--line); stroke-width: 1.2; }
+.n.new rect { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; }
+.n.ext rect { fill: var(--bg); stroke: var(--muted); stroke-dasharray: 4 3; }
+.t { fill: var(--fg); font: 600 14px var(--font); }
+.s { fill: var(--muted); font: 400 12px var(--mono); }
+.s.gone { fill: var(--gone); text-decoration: line-through; }
+.s.add { fill: var(--accent); }
+.tag { font: 600 10px var(--mono); letter-spacing: 0.06em; fill: var(--accent); }
+.e { fill: none; stroke-width: 1.6; }
+.e.sign { stroke: var(--accent); }
+.e.sync { stroke: var(--sync); stroke-dasharray: 6 4; }
+.e.key { stroke: var(--muted); stroke-dasharray: 3 3; }
+.e.old { stroke: var(--muted); }
+.e.ret { stroke: var(--muted); stroke-dasharray: 5 4; }
+.life { stroke: var(--line); stroke-width: 1.2; stroke-dasharray: 4 4; }
+.l { font: 500 12px var(--font); fill: var(--fg); }
+.l.sync { fill: var(--sync); }
+.l.key { fill: var(--muted); }
+.ah-sign { fill: var(--accent); } .ah-sync { fill: var(--sync); } .ah-muted { fill: var(--muted); }
+
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12.5px; color: var(--muted); margin-top: 10px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 22px; height: 0; border-top: 2px solid; display: inline-block; }
+.sw.sign { border-color: var(--accent); } .sw.sync { border-color: var(--sync); border-top-style: dashed; } .sw.key { border-color: var(--muted); border-top-style: dotted; }
+.box { width: 14px; height: 10px; border-radius: 2px; display: inline-block; border: 1.5px solid var(--accent); background: var(--accent-soft); }
+
+.shift { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.shift .panel { display: grid; gap: 6px; }
+.shift .q { font-size: 13px; color: var(--muted); }
+.shift .from { color: var(--gone); text-decoration: line-through; font-family: var(--mono); font-size: 13px; overflow-wrap: anywhere; }
+.shift .to { font-family: var(--mono); font-size: 13px; color: var(--accent); font-weight: 500; overflow-wrap: anywhere; }
+
+/* section 2 */
+.bar { display: flex; height: 26px; border-radius: 6px; overflow: hidden; border: 1px solid var(--line); }
+.bar i { display: block; height: 100%; }
+.bar-key { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 4px 16px; font-size: 13px; margin-top: 10px; font-variant-numeric: tabular-nums; }
+.bar-key span { display: flex; align-items: center; gap: 8px; }
+.bar-key i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; flex: none; }
+.bar-key em { font-style: normal; color: var(--muted); margin-left: auto; }
+.concepts { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+.concept { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--c); border-radius: 10px; padding: 16px 18px; display: grid; gap: 10px; min-width: 0; }
+.c-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.c-name { font-size: 16px; margin: 0; text-transform: none; letter-spacing: 0; color: var(--fg); font-weight: 650; }
+.flow { font-family: var(--mono); font-size: 11.5px; font-weight: 600; color: var(--c); border: 1px solid var(--c); border-radius: 4px; padding: 0 6px; }
+.c-lines { margin-left: auto; font-family: var(--mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.concept p { margin: 0; color: var(--muted); max-width: 78ch; font-size: 14.5px; }
+.files { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 8px 14px; align-items: start; }
+.side { font-size: 12px; color: var(--muted); padding-top: 3px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
+.chip { font-family: var(--mono); font-size: 12.5px; padding: 2px 8px; border-radius: 5px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); text-decoration: none; overflow-wrap: anywhere; }
+.chip span { color: var(--muted); margin-left: 4px; }
+a.chip:hover { border-color: var(--accent); }
+.chip.add { border-color: color-mix(in srgb, var(--accent) 45%, transparent); background: var(--accent-soft); color: var(--accent); }
+.chip.add span { color: var(--accent); opacity: .75; }
+.chip.del { border-color: color-mix(in srgb, var(--gone) 40%, transparent); background: var(--gone-soft); color: var(--gone); text-decoration: line-through; }
+.chip.del span { color: var(--gone); }
+.chip.mod { color: var(--fg); }
+.chip.test { border-style: dashed; color: var(--muted); }
+.chip.local, .chip.proposed { border-style: dotted; }
+.chip.local::after, .chip.proposed::after { font-size: 10.5px; color: var(--sync); margin-left: 6px; }
+.chip.local::after { content: "local"; }
+.chip.proposed::after { content: "proposed"; }
+@media (max-width: 640px) { .files { grid-template-columns: 1fr; gap: 4px; } .side { padding-top: 6px; } }
+
+/* section 3 */
+.seq-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+ol.where { margin: 0; padding-left: 22px; display: grid; gap: 6px; font-size: 13.5px; }
+ol.where li::marker { font-family: var(--mono); color: var(--muted); font-size: 12px; }
+ol.where a, ol.where code { font-family: var(--mono); font-size: 12px; }
+
+/* section 4 */
+.timeline { display: flex; align-items: stretch; overflow-x: auto; }
+.tl-seg { flex: 1 1 0; min-width: 150px; padding: 10px 12px; display: grid; gap: 2px; font-size: 13px; }
+.tl-seg b { font-weight: 600; }
+.tl-seg span { color: var(--muted); font-size: 12px; }
+.tl-seg.ok { background: var(--bg); border: 1px solid var(--line); border-radius: 8px 0 0 8px; }
+.tl-seg.down { background: var(--gone-soft); border: 1px solid color-mix(in srgb, var(--gone) 40%, transparent); color: var(--gone); flex-grow: 1.3; }
+.tl-seg.new { background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); border-radius: 0 8px 8px 0; color: var(--accent); }
+.tl-mark { writing-mode: vertical-rl; transform: rotate(180deg); font-family: var(--mono); font-size: 11px; color: var(--muted); padding: 6px 4px; border-left: 2px solid var(--fg); }
+.left-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+ul.todo { margin: 0; padding-left: 18px; display: grid; gap: 7px; font-size: 14px; }
+ul.todo li::marker { color: var(--muted); }
+footer { padding-block: 24px 48px; color: var(--muted); font-size: 12.5px; }
+</style>
+
+<nav class="index" aria-label="Sections">
+  <div class="wrap">
+    <b>PR 42</b>
+    <a href="#picture">1 The picture</a>
+    <a href="#concepts">2 Concepts in code</a>
+    <a href="#flows">3 Flows step by step</a>
+    <a href="#left">4 Left out</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <header class="top">
+    <!-- PR: owner/repo#n · head short SHA · files · +add −del. Plan: "plan · <source>". Work in progress: "branch <name> · <n> local changes". -->
+    <div class="eyebrow"><a href="https://github.com/acme-example/shop/pull/42">acme-example/shop#42</a> · head 9b07d3e · 24 files · +2,480 −780</div>
+    <h1>Send order emails through an outbox</h1>
+  </header>
+
+  <!-- SECTION 1: the picture. One lede sentence, a before and an after diagram, then one shift card per changed rule of the model. -->
+  <section class="page" id="picture">
+    <div class="page-head"><span class="page-num">1 / 4</span><h2>The picture</h2></div>
+    <p class="lede">Order requests stop sending email themselves. The API writes an outbox row in the same transaction as the order, a new worker sends it, and the email provider reports delivery back through a webhook.</p>
+
+    <div class="stack">
+      <div class="panel diagram">
+        <div class="ba-label">Before · base 4f1c2a9</div>
+        <svg viewBox="0 0 900 190" role="img" aria-labelledby="before-t">
+          <title id="before-t">Before: the web app places an order with the API, which inserts the order and sends the confirmation email over SMTP inside the same request.</title>
+          <defs>
+            <marker id="m-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah-muted" d="M0,0 L10,5 L0,10 z"/></marker>
+          </defs>
+          <path class="e old" d="M180 132 H286" marker-end="url(#m-muted)"/>
+          <text class="l" x="233" y="124" text-anchor="middle">place order</text>
+          <path class="e old" d="M390 100 V42 H556" marker-end="url(#m-muted)"/>
+          <text class="l" x="402" y="34">sendMail in the request</text>
+          <path class="e old" d="M490 132 H696" marker-end="url(#m-muted)"/>
+          <text class="l" x="593" y="124" text-anchor="middle">insert order</text>
+          <g class="n"><rect x="10" y="100" width="170" height="64" rx="8"/>
+            <text class="t" x="95" y="127" text-anchor="middle">Shop web</text>
+            <text class="s" x="95" y="147" text-anchor="middle">checkout.tsx</text></g>
+          <g class="n"><rect x="290" y="100" width="200" height="64" rx="8"/>
+            <text class="t" x="390" y="127" text-anchor="middle">Shop API</text>
+            <text class="s gone" x="390" y="147" text-anchor="middle">mailer.ts</text></g>
+          <g class="n ext"><rect x="560" y="10" width="200" height="64" rx="8"/>
+            <text class="t" x="660" y="37" text-anchor="middle">SMTP relay</text>
+            <text class="s" x="660" y="57" text-anchor="middle">one shared account</text></g>
+          <g class="n"><rect x="700" y="100" width="190" height="64" rx="8"/>
+            <text class="t" x="795" y="127" text-anchor="middle">orders schema</text>
+            <text class="s" x="795" y="147" text-anchor="middle">orders</text></g>
+        </svg>
+      </div>
+
+      <div class="panel diagram">
+        <div class="ba-label">After · head 9b07d3e</div>
+        <svg viewBox="0 0 900 320" role="img" aria-labelledby="after-t">
+          <title id="after-t">After: the API writes the order and an outbox row; a new mail worker claims unsent rows and sends them through the email API; the email API reports delivery to the API through a webhook, which stores the status.</title>
+          <defs>
+            <marker id="m-sign" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah-sign" d="M0,0 L10,5 L0,10 z"/></marker>
+            <marker id="m-sync" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah-sync" d="M0,0 L10,5 L0,10 z"/></marker>
+          </defs>
+          <path class="e sign" d="M180 72 H326" marker-end="url(#m-sign)"/>
+          <text class="l" x="253" y="64" text-anchor="middle">1 place order</text>
+          <path class="e sign" d="M430 104 V160 H760 V222" marker-end="url(#m-sign)"/>
+          <text class="l" x="595" y="152" text-anchor="middle">2 order + outbox row</text>
+          <path class="e sign" d="M690 262 H534" marker-end="url(#m-sign)"/>
+          <text class="l" x="612" y="254" text-anchor="middle">3 claim unsent rows</text>
+          <path class="e sign" d="M330 262 H184" marker-end="url(#m-sign)"/>
+          <text class="l" x="257" y="254" text-anchor="middle">4 send email</text>
+          <path class="e sync" d="M160 230 V140 H380 V108" marker-end="url(#m-sync)"/>
+          <text class="l sync" x="270" y="132" text-anchor="middle">A delivery webhook</text>
+          <path class="e sync" d="M530 88 H820 V222" marker-end="url(#m-sync)"/>
+          <text class="l sync" x="675" y="80" text-anchor="middle">B store delivery status</text>
+          <g class="n"><rect x="10" y="40" width="170" height="64" rx="8"/>
+            <text class="t" x="95" y="67" text-anchor="middle">Shop web</text>
+            <text class="s" x="95" y="87" text-anchor="middle">checkout.tsx</text></g>
+          <g class="n"><rect x="330" y="40" width="200" height="64" rx="8"/>
+            <text class="t" x="430" y="67" text-anchor="middle">Shop API</text>
+            <text class="s add" x="430" y="87" text-anchor="middle">OrderOutbox.ts</text></g>
+          <g class="n ext"><rect x="10" y="230" width="170" height="64" rx="8"/>
+            <text class="t" x="95" y="257" text-anchor="middle">Email API</text>
+            <text class="s" x="95" y="277" text-anchor="middle">HTTPS + webhook</text></g>
+          <g class="n new"><rect x="330" y="230" width="200" height="64" rx="8"/>
+            <text class="tag" x="342" y="246">NEW</text>
+            <text class="t" x="430" y="262" text-anchor="middle">Mail worker</text>
+            <text class="s" x="430" y="282" text-anchor="middle">polls every 5 s</text></g>
+          <g class="n"><rect x="690" y="226" width="200" height="72" rx="8"/>
+            <text class="t" x="790" y="250" text-anchor="middle">orders schema</text>
+            <text class="s add" x="790" y="270" text-anchor="middle">order_email_outbox</text>
+            <text class="s add" x="790" y="287" text-anchor="middle">email_delivery</text></g>
+        </svg>
+        <div class="legend">
+          <span><i class="sw sign"></i>sending</span>
+          <span><i class="sw sync"></i>delivery status</span>
+          <span><i class="box"></i>new component</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="shift">
+      <div class="panel"><div class="q">When is the email sent?</div><div class="from">inside the order request</div><div class="to">by the worker, after commit</div></div>
+      <div class="panel"><div class="q">What if the provider is down?</div><div class="from">the order request fails</div><div class="to">the row stays unsent and retries</div></div>
+      <div class="panel"><div class="q">Who knows it arrived?</div><div class="from">nobody</div><div class="to">email_delivery, from the webhook</div></div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: one card per concept, in the order of the picture. Badge = the picture's edge numbers, or "setup", "test", "deploy" for concepts without arrows. Bar widths are each concept's share of code lines (tests, lockfiles, docs excluded). -->
+  <section class="page" id="concepts">
+    <div class="page-head"><span class="page-num">2 / 4</span><h2>Each concept and its code</h2></div>
+    <p class="lede">The same pieces as the picture, each with the files that make it work. Line counts leave out tests, lockfiles and docs, which are another 1,950 lines.</p>
+
+    <div class="panel">
+      <div class="bar" role="img" aria-label="Code lines by concept">
+        <i style="width:32%;background:var(--c-1)"></i>
+        <i style="width:46.6%;background:var(--c-3)"></i>
+        <i style="width:21.4%;background:var(--c-4)"></i>
+      </div>
+      <div class="bar-key">
+        <span><i style="background:var(--c-1)"></i>Outbox write<em>420</em></span>
+        <span><i style="background:var(--c-3)"></i>Mail worker<em>610</em></span>
+        <span><i style="background:var(--c-4)"></i>Delivery webhook<em>280</em></span>
+      </div>
+    </div>
+
+    <div class="concepts">
+      <article class="concept" style="--c:var(--c-1)">
+        <div class="c-head"><span class="flow">1-2</span><h3 class="c-name">Outbox write</h3><span class="c-lines">~420 lines</span></div>
+        <p>Placing an order inserts the order and one outbox row in the same transaction. The request no longer talks to any mail server.</p>
+        <div class="files">
+          <div class="side">Shop API</div>
+          <div class="chips">
+            <a class="chip add" href="https://github.com/acme-example/shop/blob/9b07d3e5a1c24f6b8d0e2a4c6e8f0a1b3c5d7e9f/api/src/OrderOutbox.ts">OrderOutbox.ts <span>+96</span></a>
+            <a class="chip mod" href="https://github.com/acme-example/shop/blob/9b07d3e5a1c24f6b8d0e2a4c6e8f0a1b3c5d7e9f/api/src/placeOrder.ts#L30-L58">placeOrder.ts <span>+18 −41</span></a>
+            <a class="chip del" href="https://github.com/acme-example/shop/blob/4f1c2a9/api/src/mailer.ts">mailer.ts <span>−64</span></a>
+          </div>
+          <div class="side">Database</div>
+          <div class="chips"><a class="chip add" href="https://github.com/acme-example/shop/blob/9b07d3e5a1c24f6b8d0e2a4c6e8f0a1b3c5d7e9f/db/migrations/0012_outbox.sql">0012_outbox.sql <span>+38</span></a></div>
+          <div class="side">Tests</div>
+          <div class="chips"><a class="chip test" href="https://github.com/acme-example/shop/blob/9b07d3e5a1c24f6b8d0e2a4c6e8f0a1b3c5d7e9f/api/test/placeOrder.test.ts">placeOrder.test.ts <span>+120</span></a></div>
+        </div>
+      </article>
+
+      <article class="concept" style="--c:var(--c-3)">
+        <div class="c-head"><span class="flow">3-4</span><h3 class="c-name">Mail worker</h3><span class="c-lines">~610 lines</span></div>
+        <p>A new worker claims unsent rows with SKIP LOCKED every five seconds, sends each through the email API and marks it sent. A failed send waits longer before each retry.</p>
+        <div class="files">
+          <div class="side">Worker</div>
+          <div class="chips">
+            <a class="chip add" href="https://github.com/acme-example/shop/blob/9b07d3e5a1c24f6b8d0e2a4c6e8f0a1b3c5d7e9f/worker/src/mailWorker.ts">mailWorker.ts <span>+210</span></a>
+            <a class="chip add" href="https://github.com/acme-example/shop/blob/9b07d3e5a1c24f6b8d0e2a4c6e8f0a1b3c5d7e9f/worker/src/emailApi.ts">emailApi.ts <span>+88</span></a>
+            <span class="chip local">worker/src/backoff.ts:12 <span>+30</span></span>
+          </div>
+        </div>
+      </article>
+
+      <article class="concept" style="--c:var(--c-4)">
+        <div class="c-head"><span class="flow">A-B</span><h3 class="c-name">Delivery webhook</h3><span class="c-lines">~280 lines</span></div>
+        <p>The email API calls a signed webhook for each delivery or bounce. The API checks the signature and stores the status against the outbox row.</p>
+        <div class="files">
+          <div class="side">Shop API</div>
+          <div class="chips">
+            <a class="chip add" href="https://github.com/acme-example/shop/blob/9b07d3e5a1c24f6b8d0e2a4c6e8f0a1b3c5d7e9f/api/src/routes/emailWebhook.ts">emailWebhook.ts <span>+74</span></a>
+            <span class="chip proposed">api/src/routes/bounceReport.ts</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- SECTION 3: one panel pair per main flow: SVG sequence diagram, then a numbered list linking each step to its code. A change with no runtime flow gets one sentence: "No runtime flow changes." -->
+  <section class="page" id="flows">
+    <div class="page-head"><span class="page-num">3 / 4</span><h2>Flows step by step</h2></div>
+    <p class="lede">One flow covers sending and delivery. It starts after the order transaction commits, with no browser involved.</p>
+
+    <div class="seq-grid">
+      <div class="panel diagram">
+        <h3>Sending and delivery</h3>
+        <svg viewBox="0 0 900 424" role="img" aria-labelledby="seq-t">
+          <title id="seq-t">Sending and delivery: the worker claims unsent rows, posts the email to the email API, which queues it, then marks the row sent. Later the email API calls the shop API's webhook, which stores the delivery status and answers 200.</title>
+          <defs>
+            <marker id="m-seq" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah-sign" d="M0,0 L10,5 L0,10 z"/></marker>
+            <marker id="m-ret" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah-muted" d="M0,0 L10,5 L0,10 z"/></marker>
+          </defs>
+          <g class="n new"><rect x="20" y="10" width="180" height="40" rx="6"/><text class="t" x="110" y="35" text-anchor="middle">Mail worker</text></g>
+          <g class="n"><rect x="240" y="10" width="180" height="40" rx="6"/><text class="t" x="330" y="35" text-anchor="middle">orders schema</text></g>
+          <g class="n ext"><rect x="460" y="10" width="180" height="40" rx="6"/><text class="t" x="550" y="35" text-anchor="middle">Email API</text></g>
+          <g class="n"><rect x="680" y="10" width="180" height="40" rx="6"/><text class="t" x="770" y="35" text-anchor="middle">Shop API</text></g>
+          <line class="life" x1="110" y1="50" x2="110" y2="414"/>
+          <line class="life" x1="330" y1="50" x2="330" y2="414"/>
+          <line class="life" x1="550" y1="50" x2="550" y2="414"/>
+          <line class="life" x1="770" y1="50" x2="770" y2="414"/>
+          <path class="e sign" d="M110 96 H326" marker-end="url(#m-seq)"/>
+          <text class="l" x="220" y="88" text-anchor="middle">1 claim unsent rows</text>
+          <path class="e sign" d="M110 140 H546" marker-end="url(#m-seq)"/>
+          <text class="l" x="220" y="132" text-anchor="middle">2 POST /email</text>
+          <path class="e sign" d="M550 184 H590 V204 H554" marker-end="url(#m-seq)"/>
+          <text class="l" x="598" y="198">3 queue for delivery</text>
+          <path class="e sign" d="M110 272 H326" marker-end="url(#m-seq)"/>
+          <text class="l" x="220" y="264" text-anchor="middle">4 mark row sent</text>
+          <path class="e sign" d="M550 316 H766" marker-end="url(#m-seq)"/>
+          <text class="l" x="660" y="308" text-anchor="middle">5 delivery webhook</text>
+          <path class="e sign" d="M770 360 H334" marker-end="url(#m-seq)"/>
+          <text class="l" x="660" y="352" text-anchor="middle">6 store delivery status</text>
+          <path class="e ret" d="M770 404 H554" marker-end="url(#m-ret)"/>
+          <text class="l key" x="660" y="396" text-anchor="middle">7 200 OK</text>
+        </svg>
+      </div>
+      <div class="panel">
+        <h3>Where each step lives</h3>
+        <ol class="where">
+          <li>Claim with SKIP LOCKED <a href="https://github.com/acme-example/shop/blob/9b07d3e5a1c24f6b8d0e2a4c6e8f0a1b3c5d7e9f/worker/src/mailWorker.ts#L40-L66">mailWorker.ts:40</a></li>
+          <li>Send <a href="https://github.com/acme-example/shop/blob/9b07d3e5a1c24f6b8d0e2a4c6e8f0a1b3c5d7e9f/worker/src/emailApi.ts#L12-L35">emailApi.ts:12</a></li>
+          <li>Provider side, outside this repo <a href="https://github.com/acme-example/shop/blob/9b07d3e5a1c24f6b8d0e2a4c6e8f0a1b3c5d7e9f/worker/src/emailApi.ts#L36-L44">emailApi.ts:36</a> reads its answer</li>
+          <li>Mark sent <a href="https://github.com/acme-example/shop/blob/9b07d3e5a1c24f6b8d0e2a4c6e8f0a1b3c5d7e9f/worker/src/mailWorker.ts#L70-L82">mailWorker.ts:70</a></li>
+          <li>Webhook route and signature check <a href="https://github.com/acme-example/shop/blob/9b07d3e5a1c24f6b8d0e2a4c6e8f0a1b3c5d7e9f/api/src/routes/emailWebhook.ts#L10-L31">emailWebhook.ts:10</a></li>
+          <li>Store status <code>api/src/routes/emailWebhook.ts:44</code> (local)</li>
+          <li>Response <a href="https://github.com/acme-example/shop/blob/9b07d3e5a1c24f6b8d0e2a4c6e8f0a1b3c5d7e9f/api/src/routes/emailWebhook.ts#L60-L62">emailWebhook.ts:60</a></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: only items with a written source. Groups: rollout window (only when there is an outage or ordering constraint), outside the code, testing aids, known limits, not run. Drop empty groups. Plans: "Not doing" items and open steps. -->
+  <section class="page" id="left">
+    <div class="page-head"><span class="page-num">4 / 4</span><h2>Left out and still to do</h2></div>
+    <p class="lede">What this change knowingly does not cover, from the PR description and the worker's README.</p>
+
+    <div class="panel">
+      <h3>Deploy order</h3>
+      <div class="timeline" role="img" aria-label="Emails send from the request until the API deploys; between the API and worker deploys, orders queue but no email goes out; after the worker deploys, queued emails send.">
+        <div class="tl-seg ok"><b>Emails sent in the request</b><span>old API</span></div>
+        <div class="tl-mark">deploy API</div>
+        <div class="tl-seg down"><b>Orders queue, no emails go out</b><span>worker not deployed yet</span></div>
+        <div class="tl-mark">deploy worker</div>
+        <div class="tl-seg new"><b>Worker sends queued emails</b><span>backlog drains first</span></div>
+      </div>
+    </div>
+
+    <div class="left-grid">
+      <div class="panel">
+        <h3>Not done yet, outside the code</h3>
+        <ul class="todo">
+          <li>Create the email API key in the secrets store before the worker deploys.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Testing aids to remove before customers</h3>
+        <ul class="todo">
+          <li><code>MAIL_WORKER_DRY_RUN</code> logs emails instead of sending them. <a href="https://github.com/acme-example/shop/blob/9b07d3e5a1c24f6b8d0e2a4c6e8f0a1b3c5d7e9f/worker/src/mailWorker.ts#L18-L20">mailWorker.ts:18</a></li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Known limits</h3>
+        <ul class="todo">
+          <li>A row that fails ten times stays unsent, and nothing alerts on it.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Not run</h3>
+        <ul class="todo">
+          <li>A load test of the worker at peak order volume.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>Made with /understand from acme-example/shop#42 at 9b07d3e.</footer>
+</div>

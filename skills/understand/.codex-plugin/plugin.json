@@ -1,0 +1,31 @@
+{
+  "name": "understand",
+  "version": "0.1.0",
+  "description": "Adds /understand: a four-section visual briefing of a PR, branch, plan or work in progress, from the system picture down to the code.",
+  "author": {
+    "name": "Emil Fleron"
+  },
+  "keywords": [
+    "review",
+    "architecture",
+    "briefing",
+    "diagrams"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Understand",
+    "shortDescription": "Visual briefing of a change",
+    "longDescription": "Explain a PR, branch, plan or work in progress as four sections: before and after picture, each concept with its code, flows step by step, and what is left out.",
+    "developerName": "Emil Fleron",
+    "category": "Coding",
+    "capabilities": [
+      "Instructions"
+    ],
+    "defaultPrompt": [
+      "Help me understand this PR.",
+      "Brief me on the work in this branch.",
+      "Explain this plan visually."
+    ],
+    "brandColor": "#2456D6"
+  }
+}
