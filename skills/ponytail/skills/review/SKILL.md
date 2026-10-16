@@ -13,6 +13,23 @@ Order of importance: correct, safe, holds under load, tested, fast, lean.
 Lean still matters: every extra line must be read, tested and fixed later.
 This is a report the user asked for, so give it in full.
 
+## Choose where to run
+
+Choose the runner once. If you are already the delegated reviewer, follow
+the review steps below directly without asking or delegating again.
+
+- **Claude:** If `/codex:rescue` is installed, ask whether to run this review
+  with Codex or in Claude, unless the user has already chosen. If they choose
+  Codex, invoke `/codex:rescue`. If it is unavailable or they choose Claude,
+  perform the review in Claude.
+- **Codex:** Run the review in a native subagent without asking the routing
+  question.
+
+For either handoff, pass the original review request, the exact review
+target, and this skill's full instructions. Tell the reviewer to perform the
+review directly, change no code, and return the full report. Give that report
+to the user in full.
+
 ## 1. Understand first
 
 - Review what the user names: uncommitted or staged changes, a branch, a PR

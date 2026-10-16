@@ -19,6 +19,8 @@ Interview until shared understanding. Each round: about five questions aimed at 
 
 Use `AskUserQuestion` for anything that reduces to discrete options. Facts come from the repo or a sub-agent, never from the user. Decisions are the user's. Push back on scope, offer two or three approaches with trade-offs, lead with your recommendation. Done when nothing is left silently assumed.
 
+Keep the feature outcomes in mind while establishing the implementation approach, including the data model, data flow, and major architectural patterns. Resolve the decisions that shape the implementation without prescribing low-level details.
+
 Then dispatch the `plan-reviewer` agent. Loop until it replies `approved, no blocking issues`. Then human approval.
 
 ## Output
