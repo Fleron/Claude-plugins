@@ -43,6 +43,34 @@ function fixture(t) {
   return { temporary, env, root, run, request, requestEnvironment };
 }
 
+test('manifest hook commands are inert in Codex and dispatch in Claude', (t) => {
+  const { temporary, env, request } = fixture(t);
+  const pluginRoot = fileURLToPath(new URL('../', import.meta.url));
+  const manifest = JSON.parse(fs.readFileSync(path.join(pluginRoot, 'hooks/hooks.json'), 'utf8'));
+  const commands = Object.fromEntries(Object.entries(manifest.hooks)
+    .map(([event, definitions]) => [event, definitions[0].hooks[0].command]));
+  const codexEnv = { PATH: process.env.PATH, CODEX_PLUGIN_ROOT: pluginRoot };
+  for (const command of Object.values(commands)) {
+    const result = spawnSync('/bin/sh', ['-c', command], { env: codexEnv, input: '{}', encoding: 'utf8' });
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(result.stdout, '');
+    assert.equal(result.stderr, '');
+  }
+  const envFile = path.join(temporary, 'session.env');
+  const claudeEnv = { ...env, CLAUDE_PLUGIN_ROOT: pluginRoot, CLAUDE_ENV_FILE: envFile };
+  const started = spawnSync('/bin/sh', ['-c', commands.SessionStart], {
+    env: claudeEnv, input: JSON.stringify({ session_id: 'session-a', source: 'startup' }), encoding: 'utf8',
+  });
+  assert.equal(started.status, 0, started.stderr);
+  assert.match(fs.readFileSync(envFile, 'utf8'), /DEVELOPMENT_FLOW_CLAUDE_SESSION_ID/);
+  request();
+  const stopped = spawnSync('/bin/sh', ['-c', commands.Stop], {
+    env: claudeEnv, input: JSON.stringify({ session_id: 'session-a' }), encoding: 'utf8',
+  });
+  assert.equal(stopped.status, 0, stopped.stderr);
+  assert.equal(JSON.parse(stopped.stdout).continue, false);
+});
+
 test('ordinary Stop and non-Claude SessionStart leave no state or output', (t) => {
   const { run, root } = fixture(t);
   for (const args of [['stop'], ['session-start']]) {
