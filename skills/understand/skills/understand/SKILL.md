@@ -8,9 +8,10 @@ description: Use when the user types /understand, or asks to understand, explain
 Make one visual briefing that helps a technical colleague, such as an architect or a technical
 PM, understand a change. The page has four sections, each deeper than the one before:
 
-1. **The picture.** The title, one sentence on what changes, before and after diagrams, and
-   one card per shift in the model.
-2. **Each concept and its code.** One card per concept from the picture, with its files.
+1. **The picture.** The title, one sentence on what changes, before and after data flow
+   diagrams with a tag on each contract, and one card per shift in the model.
+2. **Each concept and its code.** One card per contract between components, then one card per
+   concept from the picture, with its files.
 3. **Flows step by step.** Sequence diagrams, each step linked to its code.
 4. **Left out and still to do.** Only items someone wrote down.
 
@@ -19,6 +20,24 @@ second half.
 
 The briefing explains the change and never judges it. It has no findings, risks, verdicts or
 review comments. It is read-only toward the repository: do not edit, commit or post anything.
+
+## Data flow and contracts
+
+Every diagram on the page draws data flow. An arrow starts where the data comes from and ends
+where it lands, and its label names the data it carries, such as "order + lines" or "delivery
+status", not the function that moves it. A read points from the store to the reader, even though
+the reader starts the call. When data moves both ways, draw the direction that carries the data
+this change is about. Sequence diagrams are the exception: they show messages in time order, so
+each arrow points from sender to receiver. Each label names the data the message carries, and a
+read names what it fetches.
+
+A contract is the agreed shape of data crossing a boundary between components that are built,
+owned or deployed separately. Examples are an HTTP route's request and response, an event or
+queue message, a webhook payload, a table one component writes and another reads, a file format,
+and a package export that another package imports. A call inside one module is not a contract.
+Every contract the change adds, changes or removes appears twice: as a tag on the edge that
+carries it in section 1, and as a card in section 2 with its producer, consumer, fields and
+definition.
 
 ## 1. Choose the target
 
@@ -73,10 +92,13 @@ the mapping yourself and say so in the reply. Give it this brief, filled in:
 > change works. Return structured facts, not prose, in about 1,500 words. Every claim cites a
 > source under these rules: <paste section 2>. Write "unclear" rather than guess.
 >
+> Follow these rules on data flow and contracts: <paste "Data flow and contracts">.
+>
 > Return:
-> 1. Before: the components involved and the main flow, step by step.
+> 1. Before: the components involved and how data moves between them, step by step: what data,
+>    from which component, to which.
 > 2. After: the same, with what changed. Make each flow precise enough to draw as a sequence
->    diagram, naming the actors, the calls and the data written.
+>    diagram, naming the actors, the data each message carries and the data written.
 > 3. Shifts in the model: each rule that changed, as "question: old → new" (for example, "when
 >    is the email sent: inside the order request → by a worker after commit").
 > 4. Concepts: group every changed file under the concept it serves, in flow order. Give each
@@ -87,6 +109,12 @@ the mapping yourself and say so in the reply. Give it this brief, filled in:
 >    go-live, TODO or "testing aid" markers in the diff, and checks the description says were
 >    not run. Quote or cite each item. Note an outage or ordering window when the description
 >    describes one.
+> 6. Contracts: every contract the change adds, changes or removes. For each, give the name,
+>    the kind, producer → consumer, the flow steps that carry it (before-flow steps for a
+>    removed one), its fields with types,
+>    which fields were added, removed or changed type, and where it is defined. A shape with no
+>    single definition, such as JSON built inline, cites the code that writes it and the code
+>    that reads it.
 
 ## 4. Fill the page
 
@@ -99,12 +127,18 @@ What each section holds depends on the target:
 | Section | PR or branch | Plan | Work in progress |
 | --- | --- | --- | --- |
 | 1 Picture | before = base, after = head | before = today, after = proposed | before = base, after = working tree |
+| 2 Contracts | contracts added, changed or removed | contracts the plan adds, changes or removes | contracts changed so far |
 | 2 Concepts | changed files with counts | files the plan touches, no counts | changed files, local ones marked |
 | 3 Flows | flows as built | flows as proposed | flows as built so far |
 | 4 Left out | PR description, doc constraints, markers in the diff, checks not run | the plan's "not doing" and open steps | unfinished steps the session names |
 
 - Section 1 has one diagram pair. Number the after diagram's edges in flow order, and letter a
   second flow (A, B). Each section 2 card's badge repeats those numbers.
+- Tag each contract once, on the first after-diagram edge that carries it. Tag a removed
+  contract, struck through, on the before diagram; its card's badge is `before`.
+- Section 2 opens with the contract cards, in flow order, before the bar and the concept cards.
+  Each card shows the name, its state, producer → consumer and the kind, the fields with added,
+  changed and removed ones marked, and a chip linking to the definition.
 - Section 2 counts added plus removed lines. Its bar shows code lines per concept, and its lede
   gives the lines left out of the bar for tests, lockfiles and docs.
 - Section 3 has one diagram and one step list per main flow, at most three flows. With no
@@ -132,6 +166,9 @@ Start a read-only verifier subagent on the filled page with this brief:
 > Read-only. Check this briefing at <path> against <repository> at base <sha> and head <sha>,
 > under these evidence rules: <paste section 2>. Check every diagram node and edge, every file
 > chip, link, line range and count, every step in section 3, and every item in section 4.
+> Check that every arrow points the way the data moves in the code, that every contract the
+> change adds, changes or removes has a tag and a card, and that every card's ends, fields and
+> definition link match the source.
 > Report each claim that the source does not support, with the fix. Check SVG geometry too:
 > every label inside its viewBox, no label overlapping a node or another label (estimate 6.5px
 > per character for sans labels and 7.2px for monospace sublines, which must fit inside their

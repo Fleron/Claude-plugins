@@ -20,13 +20,15 @@ try to look like it. Every preview uses this layout, so two of them can be compa
 
 ## Sections
 
-1. **The picture.** The before diagram above the after diagram. Same nodes, numbered edges and
-   new/removed marks as the page. Draw them in `currentColor` and series variables
+1. **The picture.** The before diagram above the after diagram. Same nodes, numbered data flow
+   edges, contract tags and new/removed marks as the page. Draw them in `currentColor` and series variables
    (`--viz-series-1` for the main flow, `--viz-series-2` for a second flow). Below them, one
    card per shift in the model, each holding the question as its label, the old value
    struck through, and the new value.
-2. **Concepts in code.** A row of label and value pairs for lines per concept, with no stacked
-   bar. Then one card per concept: the badge with its edge numbers, the name, and file chips
+2. **Concepts in code.** First one card per contract: the badge with its edge numbers, the
+   name, its state, producer → consumer and the kind, and one line per field, with added fields
+   prefixed `+`, changed ones `~` and removed ones struck through, then the definition link. Then a row of label and value
+   pairs for lines per concept, with no stacked bar. Then one card per concept: the badge with its edge numbers, the name, and file chips
    grouped by where they live. Chips show `+added −removed`. Removed files are struck through,
    local-only files say "local", and proposed files say "proposed". Links follow the same
    evidence rules as the page.
@@ -46,7 +48,7 @@ Fill this outline, around the visualization reference line that `visualize` requ
 <headline: what changes, one sentence>
 
 1 The picture: <one sentence>
-2 Concepts in code: <one sentence per concept>
+2 Concepts in code: <one sentence on the contracts, then one sentence per concept>
 <visualization reference line>
 3 Flows: <one sentence per flow>
 4 Left out: <one sentence>
