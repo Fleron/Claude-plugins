@@ -12,8 +12,14 @@
   - Picture diagrams: viewBox width 900. Node <g class="n"> = rect + .t title (14px, y = top + 27)
     + .s sublines (12px mono, 17-20px apart). Node classes: .new (added), .ext (outside the repo).
     Sublines: .s.add for new names, .s.gone for removed names (struck through).
-  - Edges: <path class="e sign|sync|key|old"> with the matching marker. Number labels in flow
-    order ("1 sign in"); the same numbers appear as badges on section 2 cards.
+  - Edges draw data flow: an edge starts where the data comes from and ends where it lands, and
+    its label names the data ("1 order + lines"), not the call. A read points from the store to
+    the reader. <path class="e sign|sync|key|old"> with the matching marker. Number labels in flow
+    order; the same numbers appear as badges on section 2 cards.
+  - Contract tags: <g class="ct new|chg|gone"> = rect 18px tall, rx 4, top 6px below a horizontal
+    edge, + text (11px mono) centred at rect top + 13. Width = 6.6px per character + 12px, and it
+    fits between the nodes like a label. Tag a contract once, on the first after-diagram edge that
+    carries it; tag a removed contract, struck, on the before diagram.
   - Labels: .l text sits 8px above a horizontal edge, never inside a node rect, and its estimated
     width fits between the nodes it sits between. Estimate 6.5px per character for .l and .t,
     7.2px for the monospace .s sublines, which must also fit inside their node rect.
@@ -136,6 +142,12 @@ h3 { font-size: 13px; margin: 0 0 8px; font-weight: 600; text-transform: upperca
 .sw { width: 22px; height: 0; border-top: 2px solid; display: inline-block; }
 .sw.sign { border-color: var(--accent); } .sw.sync { border-color: var(--sync); border-top-style: dashed; } .sw.key { border-color: var(--muted); border-top-style: dotted; }
 .box { width: 14px; height: 10px; border-radius: 2px; display: inline-block; border: 1.5px solid var(--accent); background: var(--accent-soft); }
+.ct rect { fill: var(--surface); stroke: var(--muted); stroke-width: 1; }
+.ct text { font: 500 11px var(--mono); fill: var(--fg); }
+.ct.new rect { fill: var(--accent-soft); stroke: var(--accent); } .ct.new text { fill: var(--accent); }
+.ct.chg rect { fill: var(--sync-soft); stroke: var(--sync); } .ct.chg text { fill: var(--fg); }
+.ct.gone rect { fill: var(--gone-soft); stroke: var(--gone); } .ct.gone text { fill: var(--gone); text-decoration: line-through; }
+.ctk { width: 20px; height: 11px; border-radius: 3px; display: inline-block; border: 1px solid var(--muted); background: var(--surface); }
 
 .shift { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
 .shift .panel { display: grid; gap: 6px; }
@@ -144,6 +156,19 @@ h3 { font-size: 13px; margin: 0 0 8px; font-weight: 600; text-transform: upperca
 .shift .to { font-family: var(--mono); font-size: 13px; color: var(--accent); font-weight: 500; overflow-wrap: anywhere; }
 
 /* section 2 */
+.contracts { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+.contract { display: grid; gap: 8px; align-content: start; }
+.contract .c-name { font-family: var(--mono); font-size: 14px; font-weight: 600; }
+.ct-state { margin-left: auto; font: 500 11px var(--mono); padding: 0 6px; border-radius: 4px; border: 1px solid var(--line); color: var(--muted); }
+.ct-state.new { color: var(--accent); border-color: var(--accent); }
+.ct-state.chg { color: var(--fg); border-color: var(--sync); background: var(--sync-soft); }
+.ct-state.gone { color: var(--gone); border-color: var(--gone); }
+.ct-ends { font-size: 13px; color: var(--muted); }
+ul.fields { margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; font: 400 12.5px var(--mono); overflow-wrap: anywhere; }
+ul.fields li::before { content: "\00a0\00a0"; white-space: pre; }
+ul.fields li.add { color: var(--accent); } ul.fields li.add::before { content: "+ "; }
+ul.fields li.chg::before { content: "~ "; color: var(--sync); }
+ul.fields li.gone { color: var(--gone); text-decoration: line-through; } ul.fields li.gone::before { content: "\2212 "; }
 .bar { display: flex; height: 26px; border-radius: 6px; overflow: hidden; border: 1px solid var(--line); }
 .bar i { display: block; height: 100%; }
 .bar-key { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 4px 16px; font-size: 13px; margin-top: 10px; font-variant-numeric: tabular-nums; }
@@ -227,11 +252,12 @@ footer { padding-block: 24px 48px; color: var(--muted); font-size: 12.5px; }
             <marker id="m-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah-muted" d="M0,0 L10,5 L0,10 z"/></marker>
           </defs>
           <path class="e old" d="M180 132 H286" marker-end="url(#m-muted)"/>
-          <text class="l" x="233" y="124" text-anchor="middle">place order</text>
+          <text class="l" x="233" y="124" text-anchor="middle">order + lines</text>
           <path class="e old" d="M390 100 V42 H556" marker-end="url(#m-muted)"/>
-          <text class="l" x="402" y="34">sendMail in the request</text>
+          <text class="l" x="402" y="34">email, in the request</text>
+          <g class="ct gone"><rect x="402" y="48" width="71" height="18" rx="4"/><text x="437.5" y="61" text-anchor="middle">SMTP send</text></g>
           <path class="e old" d="M490 132 H696" marker-end="url(#m-muted)"/>
-          <text class="l" x="593" y="124" text-anchor="middle">insert order</text>
+          <text class="l" x="593" y="124" text-anchor="middle">order row</text>
           <g class="n"><rect x="10" y="100" width="170" height="64" rx="8"/>
             <text class="t" x="95" y="127" text-anchor="middle">Shop web</text>
             <text class="s" x="95" y="147" text-anchor="middle">checkout.tsx</text></g>
@@ -256,17 +282,21 @@ footer { padding-block: 24px 48px; color: var(--muted); font-size: 12.5px; }
             <marker id="m-sync" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah-sync" d="M0,0 L10,5 L0,10 z"/></marker>
           </defs>
           <path class="e sign" d="M180 72 H326" marker-end="url(#m-sign)"/>
-          <text class="l" x="253" y="64" text-anchor="middle">1 place order</text>
+          <text class="l" x="253" y="64" text-anchor="middle">1 order + lines</text>
+          <g class="ct chg"><rect x="208" y="78" width="91" height="18" rx="4"/><text x="253.5" y="91" text-anchor="middle">POST /orders</text></g>
           <path class="e sign" d="M430 104 V160 H760 V222" marker-end="url(#m-sign)"/>
           <text class="l" x="595" y="152" text-anchor="middle">2 order + outbox row</text>
+          <g class="ct new"><rect x="530" y="166" width="131" height="18" rx="4"/><text x="595.5" y="179" text-anchor="middle">order_email_outbox</text></g>
           <path class="e sign" d="M690 262 H534" marker-end="url(#m-sign)"/>
-          <text class="l" x="612" y="254" text-anchor="middle">3 claim unsent rows</text>
+          <text class="l" x="612" y="254" text-anchor="middle">3 unsent outbox rows</text>
           <path class="e sign" d="M330 262 H184" marker-end="url(#m-sign)"/>
-          <text class="l" x="257" y="254" text-anchor="middle">4 send email</text>
+          <text class="l" x="257" y="254" text-anchor="middle">4 email message</text>
+          <g class="ct new"><rect x="214" y="268" width="85" height="18" rx="4"/><text x="256.5" y="281" text-anchor="middle">POST /email</text></g>
           <path class="e sync" d="M160 230 V140 H380 V108" marker-end="url(#m-sync)"/>
-          <text class="l sync" x="270" y="132" text-anchor="middle">A delivery webhook</text>
+          <text class="l sync" x="270" y="132" text-anchor="middle">A delivery event</text>
+          <g class="ct new"><rect x="211" y="146" width="118" height="18" rx="4"/><text x="270" y="159" text-anchor="middle">delivery.updated</text></g>
           <path class="e sync" d="M530 88 H820 V222" marker-end="url(#m-sync)"/>
-          <text class="l sync" x="675" y="80" text-anchor="middle">B store delivery status</text>
+          <text class="l sync" x="675" y="80" text-anchor="middle">B delivery status</text>
           <g class="n"><rect x="10" y="40" width="170" height="64" rx="8"/>
             <text class="t" x="95" y="67" text-anchor="middle">Shop web</text>
             <text class="s" x="95" y="87" text-anchor="middle">checkout.tsx</text></g>
@@ -289,6 +319,7 @@ footer { padding-block: 24px 48px; color: var(--muted); font-size: 12.5px; }
           <span><i class="sw sign"></i>sending</span>
           <span><i class="sw sync"></i>delivery status</span>
           <span><i class="box"></i>new component</span>
+          <span><i class="ctk"></i>contract</span>
         </div>
       </div>
     </div>
@@ -300,10 +331,70 @@ footer { padding-block: 24px 48px; color: var(--muted); font-size: 12.5px; }
     </div>
   </section>
 
-  <!-- SECTION 2: one card per concept, in the order of the picture. Badge = the picture's edge numbers, or "setup", "test", "deploy" for concepts without arrows. Bar widths are each concept's share of code lines (tests, lockfiles, docs excluded). -->
+  <!-- SECTION 2: one card per concept, in the order of the picture. Contract cards come first, one per contract tag in the picture, with the same state (new, changed, removed) and the edge numbers that carry it as the badge; fields are marked add, chg or gone. Then concept cards. Badge = the picture's edge numbers, or "setup", "test", "deploy" for concepts without arrows. Bar widths are each concept's share of code lines (tests, lockfiles, docs excluded). -->
   <section class="page" id="concepts">
     <div class="page-head"><span class="page-num">2 / 4</span><h2>Each concept and its code</h2></div>
-    <p class="lede">The same pieces as the picture, each with the files that make it work. Line counts leave out tests, lockfiles and docs, which are another 1,950 lines.</p>
+    <p class="lede">First the contracts between the pieces of the picture, then each piece with the files that make it work. Line counts leave out tests, lockfiles and docs, which are another 1,950 lines.</p>
+
+    <h3>Contracts</h3>
+    <div class="contracts">
+      <article class="panel contract" style="--c:var(--c-1)">
+        <div class="c-head"><span class="flow">1</span><h3 class="c-name">POST /orders</h3><span class="ct-state chg">changed</span></div>
+        <div class="ct-ends">Shop web → Shop API · HTTP</div>
+        <ul class="fields">
+          <li>request.items: OrderLine[]</li>
+          <li>request.address: Address</li>
+          <li class="add">request.email: string</li>
+          <li>response.orderId: uuid</li>
+        </ul>
+        <div class="chips"><a class="chip mod" href="https://github.com/acme-example/shop/blob/9b07d3e5a1c24f6b8d0e2a4c6e8f0a1b3c5d7e9f/api/src/placeOrder.ts#L30-L58">placeOrder.ts:30</a></div>
+      </article>
+      <article class="panel contract" style="--c:var(--c-3)">
+        <div class="c-head"><span class="flow">2-3</span><h3 class="c-name">order_email_outbox</h3><span class="ct-state new">new</span></div>
+        <div class="ct-ends">Shop API → Mail worker · table</div>
+        <ul class="fields">
+          <li class="add">id: uuid</li>
+          <li class="add">order_id: uuid</li>
+          <li class="add">template: text</li>
+          <li class="add">attempts: int</li>
+          <li class="add">sent_at: timestamptz, null until sent</li>
+        </ul>
+        <div class="chips"><a class="chip add" href="https://github.com/acme-example/shop/blob/9b07d3e5a1c24f6b8d0e2a4c6e8f0a1b3c5d7e9f/db/migrations/0012_outbox.sql">0012_outbox.sql</a></div>
+      </article>
+      <article class="panel contract" style="--c:var(--c-3)">
+        <div class="c-head"><span class="flow">4</span><h3 class="c-name">POST /email</h3><span class="ct-state new">new</span></div>
+        <div class="ct-ends">Mail worker → Email API · HTTPS</div>
+        <ul class="fields">
+          <li class="add">to: string</li>
+          <li class="add">template_id: string</li>
+          <li class="add">data: object</li>
+        </ul>
+        <div class="chips"><a class="chip add" href="https://github.com/acme-example/shop/blob/9b07d3e5a1c24f6b8d0e2a4c6e8f0a1b3c5d7e9f/worker/src/emailApi.ts">emailApi.ts</a></div>
+      </article>
+      <article class="panel contract" style="--c:var(--c-4)">
+        <div class="c-head"><span class="flow">A</span><h3 class="c-name">delivery.updated</h3><span class="ct-state new">new</span></div>
+        <div class="ct-ends">Email API → Shop API · webhook</div>
+        <ul class="fields">
+          <li class="add">message_id: string</li>
+          <li class="add">status: delivered | bounced</li>
+          <li class="add">at: ISO timestamp</li>
+          <li class="add">X-Signature: string, header</li>
+        </ul>
+        <div class="chips"><a class="chip add" href="https://github.com/acme-example/shop/blob/9b07d3e5a1c24f6b8d0e2a4c6e8f0a1b3c5d7e9f/api/src/routes/emailWebhook.ts#L10-L31">emailWebhook.ts:10</a></div>
+      </article>
+      <article class="panel contract" style="--c:var(--c-2)">
+        <div class="c-head"><span class="flow">before</span><h3 class="c-name">SMTP send</h3><span class="ct-state gone">removed</span></div>
+        <div class="ct-ends">Shop API → SMTP relay · SMTP</div>
+        <ul class="fields">
+          <li class="gone">to: string</li>
+          <li class="gone">subject: string</li>
+          <li class="gone">html: string</li>
+        </ul>
+        <div class="chips"><a class="chip del" href="https://github.com/acme-example/shop/blob/4f1c2a9/api/src/mailer.ts">mailer.ts</a></div>
+      </article>
+    </div>
+
+    <h3>Concepts</h3>
 
     <div class="panel">
       <div class="bar" role="img" aria-label="Code lines by concept">
@@ -388,15 +479,15 @@ footer { padding-block: 24px 48px; color: var(--muted); font-size: 12.5px; }
           <path class="e sign" d="M110 96 H326" marker-end="url(#m-seq)"/>
           <text class="l" x="220" y="88" text-anchor="middle">1 claim unsent rows</text>
           <path class="e sign" d="M110 140 H546" marker-end="url(#m-seq)"/>
-          <text class="l" x="220" y="132" text-anchor="middle">2 POST /email</text>
+          <text class="l" x="328" y="132" text-anchor="middle">2 email via POST /email</text>
           <path class="e sign" d="M550 184 H590 V204 H554" marker-end="url(#m-seq)"/>
-          <text class="l" x="598" y="198">3 queue for delivery</text>
+          <text class="l" x="598" y="198">3 queued message</text>
           <path class="e sign" d="M110 272 H326" marker-end="url(#m-seq)"/>
-          <text class="l" x="220" y="264" text-anchor="middle">4 mark row sent</text>
+          <text class="l" x="220" y="264" text-anchor="middle">4 sent_at</text>
           <path class="e sign" d="M550 316 H766" marker-end="url(#m-seq)"/>
-          <text class="l" x="660" y="308" text-anchor="middle">5 delivery webhook</text>
+          <text class="l" x="660" y="308" text-anchor="middle">5 delivery event</text>
           <path class="e sign" d="M770 360 H334" marker-end="url(#m-seq)"/>
-          <text class="l" x="660" y="352" text-anchor="middle">6 store delivery status</text>
+          <text class="l" x="552" y="352" text-anchor="middle">6 delivery status</text>
           <path class="e ret" d="M770 404 H554" marker-end="url(#m-ret)"/>
           <text class="l key" x="660" y="396" text-anchor="middle">7 200 OK</text>
         </svg>
