@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -n \"${CLAUDE_ENV_FILE:-}\" ] && [ -n \"${CLAUDE_PLUGIN_ROOT:-}\" ]; then node \"${CLAUDE_PLUGIN_ROOT}/scripts/goal-control.mjs\" session-start; fi",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -n \"${CLAUDE_PLUGIN_DATA:-}\" ] && [ -n \"${CLAUDE_PLUGIN_ROOT:-}\" ]; then node \"${CLAUDE_PLUGIN_ROOT}/scripts/goal-control.mjs\" stop; fi",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

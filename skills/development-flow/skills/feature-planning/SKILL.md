@@ -21,6 +21,8 @@ Use `AskUserQuestion` for anything that reduces to discrete options. Facts come 
 
 Keep the feature outcomes in mind while establishing the implementation approach, including the data model, data flow, and major architectural patterns. Resolve the decisions that shape the implementation without prescribing low-level details.
 
+Ground that approach in the current flow: who owns the data and state, where it enters and changes, and which existing mechanisms can carry the new behaviour. Agree on the smallest coherent change and its verification before implementation. If discovery changes a major architectural boundary or the agreed scope, revisit that direction before expanding the work. Verify the intended repository and branch immediately before the first implementation mutation.
+
 Then dispatch the `plan-reviewer` agent. Loop until it replies `approved, no blocking issues`. Then human approval.
 
 ## Output
@@ -36,11 +38,14 @@ What a user can do after this ships, in plain language. The commands to run and 
 ## Context
 How the relevant parts of the repo fit together today. Full repository-relative paths, exact
 function and module names, where new files go. Define every term that is not ordinary English
-the first time, and say where it shows up in this repo.
+the first time, and say where it shows up in this repo. Trace the relevant current data flow
+and identify who owns its data and state.
 
 ## Approach
 The technical design and how it slots into the existing structure. Which existing mechanisms
-extend, what is new and where it lives. Every ambiguity resolved here, with why.
+extend, what is new and where it lives. Explain proposed changes to data ownership, state and
+architectural boundaries, and why this is the smallest coherent change. Every ambiguity
+resolved here, with why; leave incidental low-level details to implementation.
 
 ## Not doing
 - <thing a reader would otherwise assume is included>

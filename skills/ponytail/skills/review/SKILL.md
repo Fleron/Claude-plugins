@@ -25,10 +25,15 @@ the review steps below directly without asking or delegating again.
 - **Codex:** Run the review in a native subagent without asking the routing
   question.
 
-For either handoff, pass the original review request, the exact review
-target, and this skill's full instructions. Tell the reviewer to perform the
-review directly, change no code, and return the full report. Give that report
-to the user in full.
+Before either handoff, prepare the comparison once: repository, pinned target
+and base/head revisions, or exact staged/unstaged/untracked scope. Use a valid
+PR diff or available revision range when a shallow or detached checkout has no
+merge base. Pass that comparison, the original request, repository guidance,
+this skill's full instructions, the tools actually callable in the reviewer's
+runner, and the return path for its complete final report. Reuse supplied
+orientation; investigate only missing context. Tell the reviewer to review
+directly, change no code, and return the full report. Give that report to the
+user in full. Recheck mutable PR state before publishing findings.
 
 ## 1. Understand first
 

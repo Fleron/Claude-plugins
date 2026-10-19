@@ -9,11 +9,23 @@ Ported from the Codex `code-review` orchestrator and its `code-review-*` skills,
 
 ## Scope
 
-Infer from the argument. No argument: `git diff` against the merge base plus untracked files. A PR number, URL or branch: that PR's diff via `gh pr diff`. Flag temp, local or untracked files as "remove or ignore?", never as defects.
+Infer from the argument. No argument: review current branch changes against its verified
+intended base, plus uncommitted and untracked changes. Prepare the comparison once before
+dispatch: pin the repository, target and base/head revisions, or describe the exact
+staged/unstaged/untracked scope. For a
+PR, capture its current base/head and use its PR diff; for a branch, verify that a merge base
+exists before using it. In shallow or detached checkouts, use the pinned PR diff or an
+explicit available revision range instead of retrying an unavailable merge base. Flag temp,
+local or untracked files as "remove or ignore?", never as defects.
+
+Give each reviewer this prepared comparison, scope, repository guidance, the tools actually
+callable in its runner, and how to return its complete final report. Reuse supplied orientation
+instead of repeating it; investigate only missing context. Recheck mutable PR state before
+publishing findings or changing its metadata.
 
 ## Method
 
-Dispatch the `code-reviewer` agent once per lens, all in parallel, each given the scope and the full path of one lens file:
+Dispatch the `code-reviewer` agent once per lens, all in parallel, each given the prepared handoff and the full path of one lens file:
 
 - [references/testing.md](references/testing.md)
 - [references/context.md](references/context.md)
