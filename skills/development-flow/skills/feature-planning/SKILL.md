@@ -23,6 +23,13 @@ Keep the feature outcomes in mind while establishing the implementation approach
 
 Ground that approach in the current flow: who owns the data and state, where it enters and changes, and which existing mechanisms can carry the new behaviour. Agree on the smallest coherent change and its verification before implementation. If discovery changes a major architectural boundary or the agreed scope, revisit that direction before expanding the work. Verify the intended repository and branch immediately before the first implementation mutation.
 
+For changed collection reads, settle the semantics in the Approach: who owns the fields used
+for filtering and ordering, where filtering, ordering and cursor selection happen, and what
+bounds the work per request. Distinguish a page or batch size from a total-data limit and state
+where any total-data limit is enforced and why it is a product requirement. Do not introduce
+an unagreed customer-data cap to avoid paging. If the current boundary forces a workaround, compare
+repairing the owner or contract before choosing it.
+
 Then dispatch the `plan-reviewer` agent. Loop until it replies `approved, no blocking issues`. Then human approval.
 
 ## Output
@@ -59,6 +66,10 @@ D1. <decision> — <the cost we accept by taking it>
 ## Validation
 <working directory> `<exact command>` → <expected output>. Behaviour a human can verify, plus
 a scenario that proves the change does something beyond compiling.
+Choose functional cases that would reject the weaker solution. For changed collections, include
+the relevant cases: matches beyond a prior scan window, global ordering across pages, or related
+names outside the loaded page. Use the cases the behavior requires, rather than checking only
+page traversal or an implementation's chosen limit.
 ```
 
 Writing rules:
