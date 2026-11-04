@@ -1,0 +1,9 @@
+{
+  "name": "development-flow",
+  "version": "3.3.0",
+  "description": "Feature planning, plan-to-issues, parallel-lens code review, native Claude goal pause, PR babysitting, batch-approved PR Butler with shared local history, and tailnet sharing.",
+  "author": {
+    "name": "Emil Fleron"
+  },
+  "skills": "./skills/"
+}
